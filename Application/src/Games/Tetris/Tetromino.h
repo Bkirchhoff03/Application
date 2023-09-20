@@ -14,8 +14,10 @@
 #include "Vec2D.h"
 #include "App.h"
 #include "GameField.h"
+#include "Tetris.h"
 #include <vector>
 
+class Tetris;
 class Ball;
 class Screen;
 struct BoundaryEdge;
@@ -26,7 +28,8 @@ public:
 	}
 	virtual void draw(Screen &screen) const = 0;
 	Tetromino(const Tetromino& tet);
-	Tetromino() {
+	Tetromino() :
+			isLocked(false) {
 	}
 	inline virtual const Vec2D getPosition() const {
 		return mPoints[0];
@@ -52,32 +55,24 @@ public:
 	}
 	virtual const std::vector<Vec2D> getRectTopLeftPoints() const = 0;
 
-	inline const Vec2D* getBottomPoint() const {
-		return mBottomPoint;
-	}
-	inline const Vec2D* getTopPoint() const {
-		return mTopPoint;
-	}
-	inline const Vec2D* getLeftPoint() const {
-		return mLeftPoint;
-	}
-	inline const Vec2D* getRightPoint() const {
-		return mRightPoint;
-	}
+	const float getBottomPoint() const;
+	const float getTopPoint() const;
+	const float getLeftPoint() const;
+	const float getRightPoint() const;
 	void lock();
 protected:
 	int rotationState = 0;
 	void buildTetromino();
 	void roundPoints();
 
-	Vec2D* mRightPoint;
-	Vec2D* mLeftPoint;
-	Vec2D* mBottomPoint;
-	Vec2D* mTopPoint;
+	//Vec2D* mRightPoint;
+	//Vec2D* mLeftPoint;
+	//Vec2D* mBottomPoint;
+	//Vec2D* mTopPoint;
 
 	Color mFillColor;
 	Vec2D mVelocity;
-	const Vec2D squareDim = { App::singleton().width() / 10.0f, App::singleton().height() / 20.0f };
+	const Vec2D squareDim = { 144.0f / 10.0f, 288.0f / 20.0f };
 	bool isLocked;
 	//std::vector<AARectangle> ghost;
 };

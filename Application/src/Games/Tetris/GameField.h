@@ -11,6 +11,7 @@
 #include "Vec2D.h"
 #include "AARectangle.h"
 #include "Screen.h"
+#include "Utils.h"
 #include <vector>
 #include <cmath>
 #include <unordered_map>
@@ -35,6 +36,7 @@ private:
 	std::vector<shared_ptr<Tetromino>> allTetrominos;
 	Vec2D playField[10][20];
 	bool filledField[10][20];
+	Size dimensionsBoard = { 144, 288 };
 };
 
 

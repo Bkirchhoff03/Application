@@ -48,7 +48,7 @@ void Tetris::init(GameController &controller) {
 			if (GameController::isPressed(state)) {
 				mGameState = IN_FALLING;
 				//mCurrentFallingBlock.setVelocity(INITIAL_FALL_VELOCITY);
-				if (mCurrentFallingBlock->getLeftPoint()->GetX() > mCurrentFallingBlock->getSquareSize().GetX()) {
+				if (mCurrentFallingBlock->getLeftPoint() > 0) { // mCurrentFallingBlock->getSquareSize().GetX()) {
 					mCurrentFallingBlock->moveBy(Vec2D(-(mCurrentFallingBlock->getSquareSize().GetX()), 0));
 					//mCurrentFallingBlock->moveBy(Vec2D(0, (mCurrentFallingBlock->getSquareSize().GetY())));
 				}
@@ -64,7 +64,7 @@ void Tetris::init(GameController &controller) {
 			if (GameController::isPressed(state)) {
 				mGameState = IN_FALLING;
 				//mCurrentFallingBlock.setVelocity(INITIAL_FALL_VELOCITY);
-				if (mCurrentFallingBlock->getRightPoint()->GetX() < App::singleton().width()) {
+				if (mCurrentFallingBlock->getRightPoint() < getWidth()) {
 					mCurrentFallingBlock->moveBy(Vec2D(mCurrentFallingBlock->getSquareSize().GetX(), 0));
 					//mCurrentFallingBlock->moveBy(Vec2D(0, (mCurrentFallingBlock->getSquareSize().GetY())));
 				}
@@ -81,8 +81,8 @@ void Tetris::init(GameController &controller) {
 				mGameState = IN_FALLING;
 				while (true) {
 					if (!mGameField.isSquaresBelowFull(mCurrentFallingBlock)
-							&& mCurrentFallingBlock->getBottomPoint()->GetY()
-									< App::singleton().height() - (mCurrentFallingBlock->getSquareSize().GetY())) {
+							&& mCurrentFallingBlock->getBottomPoint()
+									< getHeight() - (mCurrentFallingBlock->getSquareSize().GetY())) {
 						mCurrentFallingBlock->moveBy(INITIAL_FALL_VELOCITY);
 					} else {
 						break;
@@ -118,42 +118,43 @@ void Tetris::init(GameController &controller) {
 }
 
 void Tetris::update(uint32_t dt) {
+	//Uint32 timeout = SDL_GetTicks64() + 500;
+	//while (SDL_GetTicks64() < timeout) {
+	std::cout << "Ticks: " << SDL_GetTicks64() % 1000 << std::endl;
 	if (mGameState == IN_FALLING) {
 		if (!mGameField.isSquaresBelowFull(mCurrentFallingBlock)
-				&& mCurrentFallingBlock->getBottomPoint()->GetY()
-						< App::singleton().height() - (mCurrentFallingBlock->getSquareSize().GetY())) {
-			uint64_t tick = SDL_GetTicks();
-			if (tick % 1000 < 10) {
+				&& mCurrentFallingBlock->getBottomPoint()
+						< getHeight() - (mCurrentFallingBlock->getSquareSize().GetY())) {
+			//if (mGameState == IN_FALLING && !mGameField.isSquaresBelowFull(mCurrentFallingBlock)&& mCurrentFallingBlock->getBottomPoint() < getHeight() - (mCurrentFallingBlock->getSquareSize().GetY())) {
+			if (SDL_GetTicks64() % 1000 < 15) {
 				mCurrentFallingBlock->moveBy(INITIAL_FALL_VELOCITY);
 			}
-			//std::cout <<"tick:" << tick <<  " mod 1000:" << tick%1000 << " Time:" << SDL_GetTicks()/1000.0f << std::endl;
-		} else if (mCurrentFallingBlock->getTopPoint()->GetY() > 0) {
-			//std::cout << "2!" << std::endl;
+			//}
+		} else if (mCurrentFallingBlock->getTopPoint() > 0) {
 			mCurrentFallingBlock->lock();
 			mGameField.addTetromino(mCurrentFallingBlock);
 			mGameField.addFills(mCurrentFallingBlock);
 			mCurrentFallingBlock = getRandTetromino();
 		} else {
-			std::cout << "3!" << std::endl;
 			mGameState = IN_GAME_END;
 			resetGame();
 		}
 	}
+	//}
+
 }
 
 void Tetris::draw(Screen &screen) {
-	screen.draw(AARectangle(Vec2D(0.0f, 0.0f), App::singleton().width(), App::singleton().height()), Color::white());
+	screen.draw(AARectangle(Vec2D(0.0f, 0.0f), getWidth(), getHeight()), Color::white());
 	mCurrentFallingBlock->draw(screen);
-	float width = App::singleton().width() / 10.0f;
+	float width = getWidth() / 10.0f;
 	mGameField.drawField(screen);
-	float height = App::singleton().height() / 20.0f;
+	float height = getHeight() / 20.0f;
 	for (int i = 0; i < 11; i++) {
-		screen.draw(Line2D(Vec2D(width * i, 0.0f), Vec2D(width * i, App::singleton().height())),
-				Color(255, 255, 255, 255));
+		screen.draw(Line2D(Vec2D(width * i, 0.0f), Vec2D(width * i, getHeight())), Color(255, 255, 255, 255));
 	}
 	for (int i = 0; i < 21; i++) {
-		screen.draw(Line2D(Vec2D(0.0f, height * i), Vec2D(App::singleton().width(), height * i)),
-				Color(255, 255, 255, 255));
+		screen.draw(Line2D(Vec2D(0.0f, height * i), Vec2D(getWidth(), height * i)), Color(255, 255, 255, 255));
 	}
 
 }
@@ -167,7 +168,6 @@ void Tetris::resetGame() {
 	mGameState = IN_FALLING;
 	mGameField.clear();
 	mCurrentFallingBlock = getRandTetromino();
-	std::cout << mCurrentFallingBlock->getTopPoint()->GetX() << std::endl;
 	mCurrentFallingBlock->setVelocity(INITIAL_FALL_VELOCITY);
 	mGameField.addTetromino(mCurrentFallingBlock);
 }

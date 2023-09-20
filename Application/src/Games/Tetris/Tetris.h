@@ -13,6 +13,7 @@
 #include "Vec2D.h"
 #include "App.h"
 #include "GameField.h"
+#include "Utils.h"
 #include <stdint.h>
 #include <vector>
 #include <iostream>
@@ -28,15 +29,23 @@ public:
 	virtual void update(uint32_t dt) override;
 	virtual void draw(Screen &screen) override;
 	virtual const std::string& getName() const override;
+	inline const uint32_t getHeight() const {
+		return dimensionsBoard.height;
+	}
+	inline const uint32_t getWidth() const {
+		return dimensionsBoard.width;
+	}
 private:
 	void resetGame();
 	void setToClearingState();
 	std::shared_ptr<Tetromino> getRandTetromino();
 	bool isGameOver() const;
-
+	constexpr static Size dimensionsBoard = { 144, 288 };
+	uint32_t height = 288;
+	uint32_t width = 144;
 	GameField mGameField;
 	const float INITIAL_FALL_SPEED = 1;
-	const Vec2D INITIAL_FALL_VELOCITY = Vec2D(0, App::singleton().height()/20.0f);
+	const Vec2D INITIAL_FALL_VELOCITY = Vec2D(0, getHeight() / 20.0f);
 	TetrisGameState mGameState;
 	std::shared_ptr<Tetromino> mCurrentFallingBlock;
 
