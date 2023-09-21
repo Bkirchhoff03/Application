@@ -47,10 +47,8 @@ void Tetris::init(GameController &controller) {
 		if (mGameState == IN_FALLING || mGameState == IN_BEGINNING) {
 			if (GameController::isPressed(state)) {
 				mGameState = IN_FALLING;
-				//mCurrentFallingBlock.setVelocity(INITIAL_FALL_VELOCITY);
-				if (mCurrentFallingBlock->getLeftPoint() > 0) { // mCurrentFallingBlock->getSquareSize().GetX()) {
+				if (mCurrentFallingBlock->getLeftPoint() > 0) {
 					mCurrentFallingBlock->moveBy(Vec2D(-(mCurrentFallingBlock->getSquareSize().GetX()), 0));
-					//mCurrentFallingBlock->moveBy(Vec2D(0, (mCurrentFallingBlock->getSquareSize().GetY())));
 				}
 			}
 		}
@@ -63,10 +61,8 @@ void Tetris::init(GameController &controller) {
 		if (mGameState == IN_FALLING || mGameState == IN_BEGINNING) {
 			if (GameController::isPressed(state)) {
 				mGameState = IN_FALLING;
-				//mCurrentFallingBlock.setVelocity(INITIAL_FALL_VELOCITY);
-				if (mCurrentFallingBlock->getRightPoint() < getWidth()) {
+				if (mCurrentFallingBlock->getRightPoint() < (getWidth() - 1)) {
 					mCurrentFallingBlock->moveBy(Vec2D(mCurrentFallingBlock->getSquareSize().GetX(), 0));
-					//mCurrentFallingBlock->moveBy(Vec2D(0, (mCurrentFallingBlock->getSquareSize().GetY())));
 				}
 			}
 		}
@@ -82,7 +78,7 @@ void Tetris::init(GameController &controller) {
 				while (true) {
 					if (!mGameField.isSquaresBelowFull(mCurrentFallingBlock)
 							&& mCurrentFallingBlock->getBottomPoint()
-									< getHeight() - (mCurrentFallingBlock->getSquareSize().GetY())) {
+									< getHeight()) {
 						mCurrentFallingBlock->moveBy(INITIAL_FALL_VELOCITY);
 					} else {
 						break;
@@ -118,18 +114,14 @@ void Tetris::init(GameController &controller) {
 }
 
 void Tetris::update(uint32_t dt) {
-	//Uint32 timeout = SDL_GetTicks64() + 500;
-	//while (SDL_GetTicks64() < timeout) {
 	std::cout << "Ticks: " << SDL_GetTicks64() % 1000 << std::endl;
 	if (mGameState == IN_FALLING) {
 		if (!mGameField.isSquaresBelowFull(mCurrentFallingBlock)
 				&& mCurrentFallingBlock->getBottomPoint()
-						< getHeight() - (mCurrentFallingBlock->getSquareSize().GetY())) {
-			//if (mGameState == IN_FALLING && !mGameField.isSquaresBelowFull(mCurrentFallingBlock)&& mCurrentFallingBlock->getBottomPoint() < getHeight() - (mCurrentFallingBlock->getSquareSize().GetY())) {
+						< getHeight()) {
 			if (SDL_GetTicks64() % 1000 < 15) {
 				mCurrentFallingBlock->moveBy(INITIAL_FALL_VELOCITY);
 			}
-			//}
 		} else if (mCurrentFallingBlock->getTopPoint() > 0) {
 			mCurrentFallingBlock->lock();
 			mGameField.addTetromino(mCurrentFallingBlock);

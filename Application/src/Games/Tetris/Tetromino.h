@@ -40,8 +40,7 @@ public:
 	inline void setVelocity(const Vec2D &vel) {
 		mVelocity = vel;
 	}
-	virtual void rotate() {
-	}
+	virtual void rotate();
 	inline Vec2D getSquareSize() const {
 		return squareDim;
 	}
@@ -83,7 +82,7 @@ public:
 	virtual Vec2D getCenterPoint() const override;
 	virtual void draw(Screen &screen) const override;
 	virtual const Color& getFillColor() override;
-	virtual void rotate() override;
+	//virtual void rotate() override;
 	virtual void moveTo(const Vec2D &point) override;
 	//virtual void moveBy(const Vec2D &delta) override;
 	virtual void teleport() override;
@@ -97,7 +96,7 @@ public:
 	virtual Vec2D getCenterPoint() const override;
 	virtual void draw(Screen &screen) const override;
 	virtual const Color& getFillColor() override;
-	virtual void rotate() override;
+	//virtual void rotate() override;
 	virtual void moveTo(const Vec2D &point) override;
 	//virtual void moveBy(const Vec2D &delta) override;
 	virtual void teleport() override;
@@ -111,7 +110,7 @@ public:
 	virtual Vec2D getCenterPoint() const override;
 	virtual void draw(Screen &screen) const override;
 	virtual const Color& getFillColor() override;
-	virtual void rotate() override;
+	//virtual void rotate() override;
 	virtual void moveTo(const Vec2D &point) override;
 	//virtual void moveBy(const Vec2D &delta) override;
 	virtual void teleport() override;
@@ -139,7 +138,7 @@ public:
 	virtual Vec2D getCenterPoint() const override;
 	virtual void draw(Screen &screen) const override;
 	virtual const Color& getFillColor() override;
-	virtual void rotate() override;
+	//virtual void rotate() override;
 	virtual void moveTo(const Vec2D &point) override;
 	//virtual void moveBy(const Vec2D &delta) override;
 	virtual void teleport() override;
@@ -154,7 +153,7 @@ public:
 	virtual Vec2D getCenterPoint() const override;
 	virtual void draw(Screen &screen) const override;
 	virtual const Color& getFillColor() override;
-	virtual void rotate() override;
+	//virtual void rotate() override;
 	virtual void moveTo(const Vec2D &point) override;
 	//virtual void moveBy(const Vec2D &delta) override;
 	virtual void teleport() override;
@@ -169,7 +168,7 @@ public:
 	virtual Vec2D getCenterPoint() const override;
 	virtual void draw(Screen &screen) const override;
 	virtual const Color& getFillColor() override;
-	virtual void rotate() override;
+	//virtual void rotate() override;
 	virtual void moveTo(const Vec2D &point) override;
 	//virtual void moveBy(const Vec2D &delta) override;
 	virtual void teleport() override;

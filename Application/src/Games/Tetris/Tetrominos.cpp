@@ -22,9 +22,32 @@ Tetromino::Tetromino(const Tetromino &tet) {
 	isLocked = tet.isLocked;
 }
 
+void Tetromino::rotate() {
+	Vec2D center = getCenterPoint();
+	std::vector<Vec2D> testerVector;
+	bool inField = true;
+	for (const Vec2D &point : mPoints) {
+		testerVector.push_back(point);
+	}
+	for (Vec2D &point : testerVector) {
+		point.rotate((PI / 2.0f), center);
+		if (!(point.GetX() <= (squareDim.GetX() * 10.0) && point.GetX() >= 0) || !inField) {
+			inField = false;
+		}
+	}
+	if (inField) {
+		for (Vec2D &point : mPoints) {
+			point.rotate((PI / 2.0f), center);
+		}
+		rotationState++;
+		rotationState %= 4;
+	}
+	roundPoints();
+}
+
 const float Tetromino::getBottomPoint() const {
 	float biggestYPos = 0;
-	for (const Vec2D &point : getRectTopLeftPoints()) {
+	for (const Vec2D &point : mPoints) {
 		if (point.GetY() > biggestYPos) {
 			biggestYPos = point.GetY();
 		}
@@ -34,7 +57,7 @@ const float Tetromino::getBottomPoint() const {
 
 const float Tetromino::getTopPoint() const {
 	float smallestYPos = 1000;
-	for (const Vec2D &point : getRectTopLeftPoints()) {
+	for (const Vec2D &point : mPoints) {
 		if (point.GetY() < smallestYPos) {
 			smallestYPos = point.GetY();
 		}
@@ -44,7 +67,7 @@ const float Tetromino::getTopPoint() const {
 
 const float Tetromino::getLeftPoint() const {
 	float smallestXPos = 1000;
-	for (const Vec2D &point : getRectTopLeftPoints()) {
+	for (const Vec2D &point : mPoints) {
 		if (point.GetX() < smallestXPos) {
 			smallestXPos = point.GetX();
 		}
@@ -54,12 +77,12 @@ const float Tetromino::getLeftPoint() const {
 
 const float Tetromino::getRightPoint() const {
 	float biggestXPos = 0;
-	for (const Vec2D &point : getRectTopLeftPoints()) {
+	for (const Vec2D &point : mPoints) {
 		if (point.GetX() > biggestXPos) {
 			biggestXPos = point.GetX();
 		}
 	}
-	return biggestXPos + squareDim.GetX();
+	return biggestXPos;
 }
 
 void Tetromino::roundPoints() {
@@ -89,37 +112,15 @@ const Color& TetrominoI::getFillColor() {
 	return mFillColor;
 }
 
-void TetrominoI::rotate() {
-	Vec2D center = getCenterPoint();
-	for (Vec2D &point : mPoints) {
-		point.rotate((PI / 2.0f), center);
-	}
-	rotationState++;
-	rotationState %= 4;
-	/*if (rotationState == 4) {
-	 rotationState = 0;
-	 mRightPoint = &mPoints[5];
-	 mLeftPoint = &mPoints[9];
-	 mBottomPoint = &mPoints[5];
-	 mTopPoint = &mPoints[0];
-	 } else if (rotationState == 3) {
-	 mRightPoint = &mPoints[0];
-	 mLeftPoint = &mPoints[4];
-	 mBottomPoint = &mPoints[0];
-	 mTopPoint = &mPoints[9];
-	 } else if (rotationState == 2) {
-	 mRightPoint = &mPoints[0];
-	 mLeftPoint = &mPoints[5];
-	 mBottomPoint = &mPoints[4];
-	 mTopPoint = &mPoints[5];
-	 } else if (rotationState == 1) {
-	 mRightPoint = &mPoints[4];
-	 mLeftPoint = &mPoints[5];
-	 mBottomPoint = &mPoints[5];
-	 mTopPoint = &mPoints[0];
-	 }*/
-	roundPoints();
-}
+/*void TetrominoI::rotate() {
+ Vec2D center = getCenterPoint();
+ for (Vec2D &point : mPoints) {
+ point.rotate((PI / 2.0f), center);
+ }
+ rotationState++;
+ rotationState %= 4;
+ roundPoints();
+ }*/
 
 void TetrominoI::moveTo(const Vec2D &point) {
 
@@ -224,37 +225,15 @@ void TetrominoJ::draw(Screen &screen) const {
 const Color& TetrominoJ::getFillColor() {
 	return mFillColor;
 }
-void TetrominoJ::rotate() {
-	Vec2D center = getCenterPoint();
-	for (Vec2D &point : mPoints) {
-		point.rotate((PI / 2.0f), center);
-	}
-	rotationState++;
-	rotationState %= 4;
-	/*if (rotationState == 4) {
-	 rotationState = 0;
-	 mRightPoint = &mPoints[5];
-	 mLeftPoint = &mPoints[9];
-	 mBottomPoint = &mPoints[5];
-	 mTopPoint = &mPoints[0];
-	 } else if (rotationState == 3) {
-	 mRightPoint = &mPoints[8];
-	 mLeftPoint = &mPoints[0];
-	 mBottomPoint = &mPoints[0];
-	 mTopPoint = &mPoints[4];
-	 } else if (rotationState == 2) {
-	 mRightPoint = &mPoints[0];
-	 mLeftPoint = &mPoints[4];
-	 mBottomPoint = &mPoints[0];
-	 mTopPoint = &mPoints[8];
-	 } else if (rotationState == 1) {
-	 mRightPoint = &mPoints[0];
-	 mLeftPoint = &mPoints[5];
-	 mBottomPoint = &mPoints[4];
-	 mTopPoint = &mPoints[0];
-	 }*/
-	roundPoints();
-}
+/*void TetrominoJ::rotate() {
+ Vec2D center = getCenterPoint();
+ for (Vec2D &point : mPoints) {
+ point.rotate((PI / 2.0f), center);
+ }
+ rotationState++;
+ rotationState %= 4;
+ roundPoints();
+ }*/
 void TetrominoJ::moveTo(const Vec2D &point) {
 }
 /*void TetrominoJ::moveBy(const Vec2D &delta) {
@@ -348,37 +327,15 @@ void TetrominoL::draw(Screen &screen) const {
 const Color& TetrominoL::getFillColor() {
 	return mFillColor;
 }
-void TetrominoL::rotate() {
-	Vec2D center = getCenterPoint();
-	for (Vec2D &point : mPoints) {
-		point.rotate((PI / 2.0f), center);
-	}
-	rotationState++;
-	rotationState %= 4;
-	/*if (rotationState == 4) {
-	 rotationState = 0;
-	 mRightPoint = &mPoints[6];
-	 mLeftPoint = &mPoints[9];
-	 mBottomPoint = &mPoints[6];
-	 mTopPoint = &mPoints[3];
-	 } else if (rotationState == 3) {
-	 mRightPoint = &mPoints[3];
-	 mLeftPoint = &mPoints[9];
-	 mBottomPoint = &mPoints[6];
-	 mTopPoint = &mPoints[0];
-	 } else if (rotationState == 2) {
-	 mRightPoint = &mPoints[0];
-	 mLeftPoint = &mPoints[4];
-	 mBottomPoint = &mPoints[4];
-	 mTopPoint = &mPoints[6];
-	 } else if (rotationState == 1) {
-	 mRightPoint = &mPoints[9];
-	 mLeftPoint = &mPoints[4];
-	 mBottomPoint = &mPoints[0];
-	 mTopPoint = &mPoints[6];
-	 }*/
-	roundPoints();
-}
+/*void TetrominoL::rotate() {
+ Vec2D center = getCenterPoint();
+ for (Vec2D &point : mPoints) {
+ point.rotate((PI / 2.0f), center);
+ }
+ rotationState++;
+ rotationState %= 4;
+ roundPoints();
+ }*/
 void TetrominoL::moveTo(const Vec2D &point) {
 }
 /*void TetrominoL::moveBy(const Vec2D &delta) {
@@ -534,37 +491,15 @@ const Color& TetrominoS::getFillColor() {
 	return mFillColor;
 }
 
-void TetrominoS::rotate() {
-	Vec2D center = getCenterPoint();
-	for (Vec2D &point : mPoints) {
-		point.rotate((PI / 2.0f), center);
-	}
-	rotationState++;
-	rotationState %= 4;
-	/*if (rotationState == 4) {
-	 rotationState = 0;
-	 mRightPoint = &mPoints[5];
-	 mLeftPoint = &mPoints[9];
-	 mBottomPoint = &mPoints[7];
-	 mTopPoint = &mPoints[2];
-	 } else if (rotationState == 3) {
-	 mRightPoint = &mPoints[9];
-	 mLeftPoint = &mPoints[4];
-	 mBottomPoint = &mPoints[0];
-	 mTopPoint = &mPoints[4];
-	 } else if (rotationState == 2) {
-	 mRightPoint = &mPoints[0];
-	 mLeftPoint = &mPoints[4];
-	 mBottomPoint = &mPoints[4];
-	 mTopPoint = &mPoints[9];
-	 } else if (rotationState == 1) {
-	 mRightPoint = &mPoints[2];
-	 mLeftPoint = &mPoints[9];
-	 mBottomPoint = &mPoints[4];
-	 mTopPoint = &mPoints[0];
-	 }*/
-	roundPoints();
-}
+/*void TetrominoS::rotate() {
+ Vec2D center = getCenterPoint();
+ for (Vec2D &point : mPoints) {
+ point.rotate((PI / 2.0f), center);
+ }
+ rotationState++;
+ rotationState %= 4;
+ roundPoints();
+ }*/
 void TetrominoS::moveTo(const Vec2D &point) {
 }
 /*void TetrominoS::moveBy(const Vec2D &delta) {
@@ -662,37 +597,15 @@ const Color& TetrominoT::getFillColor() {
  bool TetrominoT::squaresBelow() {
  }
  */
-void TetrominoT::rotate() {
-	Vec2D center = getCenterPoint();
-	for (Vec2D &point : mPoints) {
-		point.rotate((PI / 2.0f), center);
-	}
-	rotationState++;
-	rotationState %= 4;
-	/*if (rotationState == 4) {
-	 rotationState = 0;
-	 mRightPoint = &mPoints[6];
-	 mLeftPoint = &mPoints[9];
-	 mBottomPoint = &mPoints[9];
-	 mTopPoint = &mPoints[2];
-	 } else if (rotationState == 3) {
-	 mRightPoint = &mPoints[9];
-	 mLeftPoint = &mPoints[2];
-	 mBottomPoint = &mPoints[0];
-	 mTopPoint = &mPoints[5];
-	 } else if (rotationState == 2) {
-	 mRightPoint = &mPoints[0];
-	 mLeftPoint = &mPoints[5];
-	 mBottomPoint = &mPoints[2];
-	 mTopPoint = &mPoints[9];
-	 } else if (rotationState == 1) {
-	 mRightPoint = &mPoints[2];
-	 mLeftPoint = &mPoints[9];
-	 mBottomPoint = &mPoints[5];
-	 mTopPoint = &mPoints[0];
-	 }*/
-	roundPoints();
-}
+/*void TetrominoT::rotate() {
+ Vec2D center = getCenterPoint();
+ for (Vec2D &point : mPoints) {
+ point.rotate((PI / 2.0f), center);
+ }
+ rotationState++;
+ rotationState %= 4;
+ roundPoints();
+ }*/
 void TetrominoT::moveTo(const Vec2D &point) {
 }
 /*void TetrominoT::moveBy(const Vec2D &delta) {
@@ -787,37 +700,15 @@ void TetrominoZ::draw(Screen &screen) const {
 const Color& TetrominoZ::getFillColor() {
 	return mFillColor;
 }
-void TetrominoZ::rotate() {
-	Vec2D center = getCenterPoint();
-	for (Vec2D &point : mPoints) {
-		point.rotate((PI / 2.0f), center);
-	}
-	rotationState++;
-	rotationState %= 4;
-	/*if (rotationState == 4) {
-	 rotationState = 0;
-	 mRightPoint = &mPoints[5];
-	 mLeftPoint = &mPoints[9];
-	 mBottomPoint = &mPoints[7];
-	 mTopPoint = &mPoints[0];
-	 } else if (rotationState == 3) {
-	 mRightPoint = &mPoints[7];
-	 mLeftPoint = &mPoints[0];
-	 mBottomPoint = &mPoints[0];
-	 mTopPoint = &mPoints[5];
-	 } else if (rotationState == 2) {
-	 mRightPoint = &mPoints[0];
-	 mLeftPoint = &mPoints[5];
-	 mBottomPoint = &mPoints[0];
-	 mTopPoint = &mPoints[7];
-	 } else if (rotationState == 1) {
-	 mRightPoint = &mPoints[0];
-	 mLeftPoint = &mPoints[7];
-	 mBottomPoint = &mPoints[5];
-	 mTopPoint = &mPoints[0];
-	 }*/
-	roundPoints();
-}
+/*void TetrominoZ::rotate() {
+ Vec2D center = getCenterPoint();
+ for (Vec2D &point : mPoints) {
+ point.rotate((PI / 2.0f), center);
+ }
+ rotationState++;
+ rotationState %= 4;
+ roundPoints();
+ }*/
 void TetrominoZ::moveTo(const Vec2D &point) {
 }
 /*void TetrominoZ::moveBy(const Vec2D &delta) {
