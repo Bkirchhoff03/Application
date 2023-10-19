@@ -17,7 +17,7 @@
 #include <iostream>
 
 ArcadeScene::ArcadeScene() :
-		ButtonOptionsScene( { "Tetris", "Break Out!", "Asteroids", "!Pac-Man" }, Color::cyan()) {
+		ButtonOptionsScene( { "Tetris", "Break Out!", "Asteroids", "!Pac-Man", "Soccer" }, Color::cyan()) {
 
 }
 void ArcadeScene::init() {
@@ -34,9 +34,11 @@ void ArcadeScene::init() {
 	actions.push_back([this] {
 		App::singleton().pushScene(getScene(PACMAN));
 	});
+	actions.push_back([this] {
+		App::singleton().pushScene(getScene(SOCCER));
+	});
 	setButtonActions(actions);
 	ButtonOptionsScene::init();
-
 }
 
 void ArcadeScene::update(uint32_t dt) {
@@ -70,6 +72,10 @@ std::unique_ptr<Scene> ArcadeScene::getScene(eGame game) {
 		break;
 	case PACMAN: {
 		return std::make_unique<PacmanStartScene>();
+	}
+		break;
+	case SOCCER: {
+
 	}
 		break;
 	default: {

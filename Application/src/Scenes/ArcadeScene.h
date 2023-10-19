@@ -13,7 +13,7 @@
 #include <memory>
 
 enum eGame {
-	TETRIS = 0, BREAKOUT, ASTEROIDS, PACMAN, NUM_GAMES
+	TETRIS = 0, BREAKOUT, ASTEROIDS, PACMAN, SOCCER, NUM_GAMES
 };
 
 class Screen;

@@ -99,7 +99,7 @@ Vec2D Excluder::getCollisionOffset(const AARectangle &rect) const {
 			offset = (xSize + 1) * edge.normal;
 		}
 	}
-	return Vec2D::zero;
+	return offset;
 }
 void Excluder::moveBy(const Vec2D &delta) {
 	mAARect.moveBy(delta);
