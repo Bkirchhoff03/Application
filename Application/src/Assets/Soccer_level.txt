@@ -1,4 +1,4 @@
-:bg_image pacman_level.bmp
+:bg_image Soccer_level.bmp
 
 :tile 
 :tile_symbol o

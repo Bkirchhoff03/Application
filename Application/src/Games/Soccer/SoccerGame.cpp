@@ -20,7 +20,7 @@ const uint32_t GAME_STARTING_TIME = 3000;
 
 void SoccerGame::init(GameController &controller) {
 	mTimer = 0;
-	mPlayerSpriteSheet.load("PlayerSpritesTotal");
+	mPlayerSpriteSheet.load("Soccer_level");
 	mPlayer.init(mPlayerSpriteSheet, App::singleton().getBasePath() + "Assets/Pacman_animations.txt", Vec2D::zero,
 			PLAYER_MOVEMENT_SPEED, false);
 	mTeamAgainst.init(App::singleton().getBasePath() + "Assets/Pacman_level.txt", &mPlayerSpriteSheet);
