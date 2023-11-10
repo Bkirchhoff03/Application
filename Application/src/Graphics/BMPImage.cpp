@@ -14,6 +14,9 @@ BMPImage::BMPImage() :
 }
 bool BMPImage::load(const std::string &path) {
 	SDL_Surface *bmpSurface = SDL_LoadBMP(path.c_str());
+	if (bmpSurface->format->format != SDL_PIXELFORMAT_ARGB8888) {
+		bmpSurface = SDL_ConvertSurfaceFormat(bmpSurface, SDL_PIXELFORMAT_ARGB8888, 0);
+	}
 	if (bmpSurface == nullptr) {
 		return false;
 	}
@@ -27,7 +30,7 @@ bool BMPImage::load(const std::string &path) {
 
 	SDL_LockSurface(bmpSurface);
 	uint32_t *pixels = static_cast<uint32_t*>(bmpSurface->pixels);
-	for (uint32_t i = 0; i < lengthOfFile; ++i) {
+	for (size_t i = 0; i < lengthOfFile; ++i) {
 		mPixels.push_back(Color(pixels[i]));
 	}
 	SDL_UnlockSurface(bmpSurface);

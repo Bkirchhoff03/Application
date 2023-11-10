@@ -1,0 +1,195 @@
+:sprite
+:key player_moving_up_1
+:xPos 0
+:yPos 0
+:width 26
+:height 26
+
+:sprite
+:key player_moving_up_2
+:xPos 27
+:yPos 0
+:width 26
+:height 26
+
+:sprite
+:key player_moving_up_3
+:xPos 54
+:yPos 0
+:width 26
+:height 26
+
+:sprite
+:key player_moving_down_1
+:xPos 0
+:yPos 79
+:width 26
+:height 26
+
+:sprite
+:key player_moving_down_2
+:xPos 27
+:yPos 79
+:width 26
+:height 26
+
+:sprite
+:key player_moving_down_3
+:xPos 54
+:yPos 79
+:width 26
+:height 26
+
+:sprite
+:key player_moving_left_1
+:xPos 0
+:yPos 53
+:width 26
+:height 26
+
+:sprite
+:key player_moving_left_2
+:xPos 27
+:yPos 53
+:width 26
+:height 26
+
+:sprite
+:key player_moving_left_3
+:xPos 54
+:yPos 53
+:width 26
+:height 26
+
+:sprite
+:key player_moving_right_1
+:xPos 0
+:yPos 26
+:width 26
+:height 26
+
+:sprite
+:key player_moving_right_2
+:xPos 27
+:yPos 26
+:width 26
+:height 26
+
+:sprite
+:key player_moving_right_3
+:xPos 54
+:yPos 26
+:width 26
+:height 26
+
+:sprite
+:key player_moving_up_right_1
+:xPos 82
+:yPos 0
+:width 26  
+:height 26
+
+:sprite
+:key player_moving_up_right_2
+:xPos 82
+:yPos 26
+:width 26  
+:height 26
+
+:sprite
+:key player_moving_up_right_3
+:xPos 82
+:yPos 53
+:width 26  
+:height 26
+
+:sprite
+:key player_moving_down_left_1
+:xPos 82
+:yPos 106
+:width 26  
+:height 26
+
+:sprite
+:key player_moving_down_left_2
+:xPos 110
+:yPos 79
+:width 26  
+:height 26
+
+:sprite
+:key player_moving_down_left_3
+:xPos 82
+:yPos 79
+:width 26  
+:height 26
+
+:sprite
+:key player_moving_down_right_1
+:xPos 0
+:yPos 106
+:width 26  
+:height 26
+
+:sprite
+:key player_moving_down_right_2
+:xPos 27
+:yPos 106
+:width 26  
+:height 26
+
+:sprite
+:key player_moving_down_right_3
+:xPos 54
+:yPos 106
+:width 26  
+:height 26
+
+:sprite
+:key player_moving_up_left_1
+:xPos 110
+:yPos 0
+:width 26
+:height 26
+
+:sprite
+:key player_moving_up_left_2
+:xPos 110
+:yPos 26
+:width 26 
+:height 26
+
+:sprite
+:key player_moving_up_left_3
+:xPos 110
+:yPos 53
+:width 26
+:height 26
+
+:sprite
+:key ball_1
+:xPos 111
+:yPos 108
+:width 7
+:height 7
+
+:sprite
+:key ball_2
+:xPos 121
+:yPos 108
+:width 7
+:height 7
+
+:sprite
+:key ball_3
+:xPos 111
+:yPos 118
+:width 7
+:height 7
+
+:sprite
+:key ball_4
+:xPos 121
+:yPos 118
+:width 7
+:height 7

@@ -13,7 +13,7 @@
 SpriteSheet::SpriteSheet() {
 }
 bool SpriteSheet::load(const std::string &name) {
-	bool loadedImage = mBMPImage.load(App::singleton().getBasePath() + std::string("Assets/") + name + ".bmp");
+	bool loadedImage = mBMPImage.load(App::singleton().getBasePath() + std::string("Assets\\") + name + ".bmp");
 	bool loadedSpriteSections = loadSpriteSections(
 			App::singleton().getBasePath() + std::string("Assets/") + name + ".txt");
 	return loadedImage && loadedSpriteSections;

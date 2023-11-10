@@ -64,11 +64,7 @@ public:
 	inline bool isRealeasedFromZone() const {
 		return !mIsInZone;
 	}
-	inline void releaseFromZone() {
-		if (mIsInZone) {
-			mIsInZone = false;
-		}
-	}
+	void releaseFromZone();
 	inline const uint32_t getTackleOdds() const {
 		return mTackleOdds;
 	}

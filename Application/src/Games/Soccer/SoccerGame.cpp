@@ -11,19 +11,17 @@
 namespace {
 const std::string SCORE_STR = "Score ";
 const std::string PACMAN_LIFE_SPRITE_NAME = "pac_man_left_idle";
-//const size_t MAX_NUM_LIVES = 3;
-//const uint32_t RELEASE_GHOST_TIME = 5000;
 const std::string READ_STR = "Ready!";
 const std::string GAME_END_STR = "Game Over:(";
-const uint32_t GAME_STARTING_TIME = 3000;
+const uint32_t GAME_STARTING_TIME = 150;
 }
 
 void SoccerGame::init(GameController &controller) {
 	mTimer = 0;
-	mPlayerSpriteSheet.load("Soccer_level");
-	mPlayer.init(mPlayerSpriteSheet, App::singleton().getBasePath() + "Assets/Pacman_animations.txt", Vec2D::zero,
+	mPlayerSpriteSheet.load("SoccerSprites");
+	mPlayer.init(mPlayerSpriteSheet, App::singleton().getBasePath() + "Assets\\Soccer_animations.txt", Vec2D::zero,
 			PLAYER_MOVEMENT_SPEED, false);
-	mTeamAgainst.init(App::singleton().getBasePath() + "Assets/Pacman_level.txt", &mPlayerSpriteSheet);
+	mTeamAgainst.init(App::singleton().getBasePath() + "Assets\\Soccer_level.txt", &mPlayerSpriteSheet);
 
 	mStringRect = AARectangle(Vec2D(0, mTeamAgainst.getInGameTextYPos()), App::singleton().width(),
 			mPlayer.getBoundingBox().getHeight());
@@ -90,6 +88,7 @@ void SoccerGame::update(uint32_t dt) {
 
 			Defender &defender = mDefenders[i];
 			DefenderAI &defenderAI = mDefenderAI[i];
+
 			//if (mReleaseGhostTimer >= RELEASE_GHOST_TIME && ghostAI.isInPen() && !ghost.isRealeased()) {
 			//mReleaseGhostTimer = 0;
 			//ghost.releasedFromPen();
@@ -161,14 +160,10 @@ void SoccerGame::update(uint32_t dt) {
 void SoccerGame::draw(Screen &screen) {
 	mTeamAgainst.draw(screen);
 	mPlayer.draw(screen);
-
 	for (Defender &defender : mDefenders) {
 		defender.draw(screen);
 	}
 
-	/*for (GhostAI &ghostAI : mGhostAI) {
-	 ghostAI.draw(screen);
-	 }*/
 	const auto &font = App::singleton().getFont();
 
 	Vec2D textDrawPosition;
@@ -196,10 +191,12 @@ void SoccerGame::draw(Screen &screen) {
 		screen.draw(font, GAME_END_STR, textDrawPosition, Color::yellow());
 	}
 }
+
 const std::string& SoccerGame::getName() const {
 	static std::string name = "Soccer!";
 	return name;
 }
+
 void SoccerGame::callFoul(SoccerPlayer player) {
 	mGameState = GAME_STOPPED;
 	//ADD BALL MECHANICS
@@ -227,6 +224,9 @@ void SoccerGame::updatePlayerMovement() {
 			mPlayer.setMovementDirection(mPressedDirection);
 		}
 	}
+	if (mPressedDirection == PLAYER_MOVEMENT_NONE) {
+		mPlayer.stop();
+	}
 }
 void SoccerGame::handleGameControllerState(uint32_t dt, InputState state, PlayerMovement direction) {
 	if (GameController::isPressed(state)) {
@@ -248,4 +248,75 @@ void SoccerGame::resetGame() {
 void SoccerGame::drawScore(Screen &screen) {
 }
 void SoccerGame::setupDefenders() {
+	const Vec2D GK_SCATTER_POS = Vec2D(App::singleton().width() - 24, 0);
+	const Vec2D LB_SCATTER_POS = Vec2D(App::singleton().width(), App::singleton().height());
+	const Vec2D CB_SCATTER_POS = Vec2D(24, 0);
+	const Vec2D RB_SCATTER_POS = Vec2D(0, App::singleton().height());
+	const Vec2D CDM_SCATTER_POS = Vec2D(0, App::singleton().height());
+
+	mDefenders.resize(NUM_DEFENDERS);
+	mDefenderAI.resize(NUM_DEFENDERS);
+
+	Defender Gk;
+	Gk.init(mPlayerSpriteSheet, App::singleton().getBasePath() + "Assets/Soccer_animations.txt",
+			mTeamAgainst.getDefenderSpawnPoints()[GOALKEEPER], DEFENDER_MOVEMENT_SPEED, true, Color::red());
+	Gk.setMovementDirection(PLAYER_MOVEMENT_LEFT);
+	mDefenders[GOALKEEPER] = Gk;
+	auto GkAI = DefenderAI();
+	GkAI.init(mDefenders[GOALKEEPER], Gk.getBoundingBox().getWidth(), GK_SCATTER_POS,
+			mTeamAgainst.getDefenderSpawnPoints()[GOALKEEPER], mTeamAgainst.getDefenderSpawnPoints()[GOALKEEPER],
+			GOALKEEPER);
+	mDefenderAI[GOALKEEPER] = GkAI;
+
+	Defender lb;
+	lb.init(mPlayerSpriteSheet, App::singleton().getBasePath() + "Assets/Soccer_animations.txt",
+			mTeamAgainst.getDefenderSpawnPoints()[LEFT_BACK], DEFENDER_MOVEMENT_SPEED, true, Color::yellow());
+	lb.setMovementDirection(PLAYER_MOVEMENT_LEFT);
+	mDefenders[LEFT_BACK] = lb;
+	auto lbAI = DefenderAI();
+	lbAI.init(mDefenders[LEFT_BACK], lb.getBoundingBox().getWidth(), LB_SCATTER_POS,
+			mTeamAgainst.getDefenderSpawnPoints()[LEFT_BACK], mTeamAgainst.getDefenderSpawnPoints()[LEFT_BACK],
+			LEFT_BACK);
+	mDefenderAI[LEFT_BACK] = lbAI;
+
+	Defender cb;
+	cb.init(mPlayerSpriteSheet, App::singleton().getBasePath() + "Assets/Soccer_animations.txt",
+			mTeamAgainst.getDefenderSpawnPoints()[CENTER_BACK], DEFENDER_MOVEMENT_SPEED, true, Color::orange());
+	cb.setMovementDirection(PLAYER_MOVEMENT_LEFT);
+	mDefenders[CENTER_BACK] = cb;
+	auto cbAI = DefenderAI();
+	cbAI.init(mDefenders[CENTER_BACK], cb.getBoundingBox().getWidth(), CB_SCATTER_POS,
+			mTeamAgainst.getDefenderSpawnPoints()[CENTER_BACK], mTeamAgainst.getDefenderSpawnPoints()[CENTER_BACK],
+			CENTER_BACK);
+	mDefenderAI[CENTER_BACK] = cbAI;
+
+	Defender rb;
+	rb.init(mPlayerSpriteSheet, App::singleton().getBasePath() + "Assets/Soccer_animations.txt",
+			mTeamAgainst.getDefenderSpawnPoints()[RIGHT_BACK], DEFENDER_MOVEMENT_SPEED, true, Color::green());
+	rb.setMovementDirection(PLAYER_MOVEMENT_LEFT);
+	mDefenders[RIGHT_BACK] = rb;
+	auto rbAI = DefenderAI();
+	rbAI.init(mDefenders[RIGHT_BACK], rb.getBoundingBox().getWidth(), RB_SCATTER_POS,
+			mTeamAgainst.getDefenderSpawnPoints()[RIGHT_BACK], mTeamAgainst.getDefenderSpawnPoints()[RIGHT_BACK],
+			RIGHT_BACK);
+	mDefenderAI[RIGHT_BACK] = rbAI;
+
+	Defender cdm;
+	cdm.init(mPlayerSpriteSheet, App::singleton().getBasePath() + "Assets/Soccer_animations.txt",
+			mTeamAgainst.getDefenderSpawnPoints()[CENTER_DEFENSIVE_MIDFIELDER], DEFENDER_MOVEMENT_SPEED, true,
+			Color::blue());
+	cdm.setMovementDirection(PLAYER_MOVEMENT_LEFT);
+	mDefenders[CENTER_DEFENSIVE_MIDFIELDER] = cdm;
+	auto cdmAI = DefenderAI();
+	cdmAI.init(mDefenders[CENTER_DEFENSIVE_MIDFIELDER], cdm.getBoundingBox().getWidth(), CDM_SCATTER_POS,
+			mTeamAgainst.getDefenderSpawnPoints()[CENTER_DEFENSIVE_MIDFIELDER],
+			mTeamAgainst.getDefenderSpawnPoints()[CENTER_DEFENSIVE_MIDFIELDER], CENTER_DEFENSIVE_MIDFIELDER);
+	mDefenderAI[CENTER_DEFENSIVE_MIDFIELDER] = cdmAI;
+
+
+
+	for (size_t i = 0; i < NUM_DEFENDERS; ++i) {
+		mDefenders[i].setDefenderDelegate(mDefenderAI[i]);
+	}
+
 }

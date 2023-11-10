@@ -4,72 +4,61 @@
 :tile_symbol o
 :tile_ball_collision 1
 :tile_player_collision 0
-:tile_width 8
 
 :tile 
 :tile_symbol w
 :tile_ball_collision 1
 :tile_player_collision 1
-:tile_width 8
 
 :tile 
 :tile_symbol s
 :tile_ball_collision 1
 :tile_player_collision 0
-:tile_width 8
 
 :tile 
 :tile_symbol b
 :tile_ball_collision 0
 :tile_player_collision 0
 :tile_goalie_collision 1
-:tile_width 8
 
 :tile
 :tile_symbol -
 :tile_ball_collision 0
 :tile_player_collision 0
-:tile_width 8
 
 :tile
 :tile_symbol c
 :tile_collision 0
-:tile_width 8
 :tile_center_back_spawn_point 1
-:tile_offset -5 0
+:tile_offset -15 0
 
 :tile
 :tile_symbol r
 :tile_collision 0
-:tile_width 8
 :tile_right_back_spawn_point 1
-:tile_offset -5 0
+:tile_offset -15 0
 
 :tile
 :tile_symbol l
 :tile_collision 0
-:tile_width 8
 :tile_left_back_spawn_point 1
-:tile_offset -5 0
+:tile_offset -15 0
 
 :tile
 :tile_symbol k
 :tile_collision 0
-:tile_width 8
 :tile_keeper_spawn_point 1
-:tile_offset -5 0
+:tile_offset -15 0
 
 :tile
 :tile_symbol d
 :tile_collision 0
-:tile_width 8
 :tile_center_defensive_midfielder_spawn_point 1
-:tile_offset -5 0
+:tile_offset -15 0
 
 :tile
 :tile_symbol p
 :tile_collision 0
-:tile_width 8
 :tile_player_spawn_point 1
 :tile_offset -4 0
 
@@ -77,35 +66,63 @@
 :tile_symbol g
 :tile_ball_collision 1
 :tile_player_collision 1
-:tile_width 8
 :tile_is_goal 1
 
-:tile_height 8
+:tile_height 4
+:tile_width 5
 
-:layout_offset -32 20
+:layout_offset 0 20
 
-:layout 32
+:layout 50
 
-wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
-wooooooooooooooooooooooooooooooooooooow
-woooossssssssssssgggggssssssssssssoooow
-woooos----b-----------------b----soooow
-woooos----b--------k--------b----soooow
-woooos----b-----------------b----soooow
-woooos----bbbbbbbbbbbbbbbbbbb----soooow
-woooos---------------------------soooow
-woooos---r---------g---------l---soooow
-woooos---------------------------soooow
-woooos---------------------------soooow
-woooos-------------d-------------soooow
-woooos---------------------------soooow
-woooos---------------------------soooow
-woooos---------------------------soooow
-woooos---------------------------soooow
-woooos-------------p-------------soooow
-woooosssssssssssssssssssssssssssssoooow
-wooooooooooooooooooooooooooooooooooooow
-wooooooooooooooooooooooooooooooooooooow
-
-
-
+wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+woooooooooooooooooooooooooooooooooooooooooooow
+woooooooooooooooooooooooooooooooooooooooooooow
+woooooooooooooooooooooooooooooooooooooooooooow
+wossssssssssssssgggggggggggggggsssssssssssssow
+wos--------b----------------------b--------sow
+wos--------b----------k-----------b--------sow
+wos--------b----------------------b--------sow
+wos--------b----------------------b--------sow
+wos--------b----------------------b--------sow
+wos--------b----------------------b--------sow
+wos--------b----------------------b--------sow
+wos--------b----------------------b--------sow
+wos--------b----------------------b--------sow
+wos--------bbbbbbbbbbbbbbbbbbbbbbbb--------sow
+wos----------------------------------------sow
+wos----------------------------------------sow
+wos----------------------------------------sow
+wos----------------------------------------sow
+wos----------------------------------------sow
+wos----------------------------------------sow
+wos----------------------------------------sow
+wos----------------------------------------sow
+wos----------------------------------------sow
+wos----------------------------------------sow
+wos----------------------------------------sow
+wos---r---------------g----------------l---sow
+wos----------------------------------------sow
+wos----------------------------------------sow
+wos----------------------------------------sow
+wos----------------------------------------sow
+wos----------------------------------------sow
+wos----------------------------------------sow
+wos----------------------------------------sow
+wos----------------------------------------sow
+wos----------------------------------------sow
+wos----------------------------------------sow
+wos----------------------------------------sow
+wos-------------------d--------------------sow
+wos----------------------------------------sow
+wos----------------------------------------sow
+wos----------------------------------------sow
+wos----------------------------------------sow
+wos----------------------------------------sow
+wos----------------------------------------sow
+wos----------------------------------------sow
+wos----------------------------------------sow
+wos-------------------p--------------------sow
+wos----------------------------------------sow
+wossssssssssssssssssssssssssssssssssssssssssow
+wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww

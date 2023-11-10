@@ -51,7 +51,7 @@ void TeamAgainst::update(uint32_t dt, Player &player, std::vector<Defender> &def
 
 	for (Tile t : mTiles) {
 		if (t.isOutOfBoundsTile) {
-			AARectangle teleportTileAABB(t.position, t.width, static_cast<float>(mTileHeight));
+			AARectangle teleportTileAABB(t.position, static_cast<float>(mTileWidth), static_cast<float>(mTileHeight));
 
 			Tile *teleportToTile = getTileForSymbol(t.teleportToSymbol);
 			assert(teleportToTile);
@@ -73,7 +73,7 @@ void TeamAgainst::draw(Screen &screen) {
 	bgSprite.width = mBGImage.getWidth();
 	bgSprite.height = mBGImage.getHeight();
 
-	screen.draw(mBGImage, bgSprite, Vec2D::zero);
+	screen.draw(mBGImage, bgSprite, Vec2D(0, 20));
 }
 
 bool TeamAgainst::willCollide(const AARectangle &aBBox, PlayerMovement direction) const {
@@ -123,7 +123,7 @@ void TeamAgainst::resetLevel() {
 }
 
 bool TeamAgainst::isGameOver() const {
-
+	return false;
 }
 void TeamAgainst::increaseLevel() {
 
@@ -147,7 +147,8 @@ bool TeamAgainst::loadLevel(const std::string &levelPath) {
 	Command tileWidthCommand;
 	tileWidthCommand.command = "tile_width";
 	tileWidthCommand.parseFunc = [this](ParseFuncParams params) {
-		mTiles.back().width = FileCommandLoader::readInt(params);
+		mTileWidth = FileCommandLoader::readInt(params);
+		//mTiles.back().width = FileCommandLoader::readInt(params);
 	};
 	fileLoader.addCommand(tileWidthCommand);
 
@@ -202,24 +203,6 @@ bool TeamAgainst::loadLevel(const std::string &levelPath) {
 		layoutOffset = mLayoutOffset;
 	};
 	fileLoader.addCommand(layoutOffsetCommand);
-	/*
-
-	Command tileIsTeleportTileCommand;
-	tileIsTeleportTileCommand.command = "tile_is_teleport_tile";
-	tileIsTeleportTileCommand.parseFunc = [this](ParseFuncParams params) {
-		mTiles.back().isTeleportTile = FileCommandLoader::readInt(params);
-	};
-	fileLoader.addCommand(tileIsTeleportTileCommand);
-	 */
-	/*
-
-	Command tileToTeleportToCommand;
-	tileToTeleportToCommand.command = "tile_teleport_to_symbol";
-	tileToTeleportToCommand.parseFunc = [this](ParseFuncParams params) {
-		mTiles.back().teleportToSymbol = FileCommandLoader::readChar(params);
-	};
-	fileLoader.addCommand(tileToTeleportToCommand);
-	 */
 
 	Command tileOffsetCommand;
 	tileOffsetCommand.command = "tile_offset";
@@ -227,13 +210,6 @@ bool TeamAgainst::loadLevel(const std::string &levelPath) {
 		mTiles.back().offset = FileCommandLoader::readSize(params);
 	};
 	fileLoader.addCommand(tileOffsetCommand);
-
-	/*	Command tileExcludePelletCommand;
-	tileExcludePelletCommand.command = "tile_exclude_pellet";
-	tileExcludePelletCommand.parseFunc = [this](ParseFuncParams params) {
-		mTiles.back().excludePelletTile = FileCommandLoader::readInt(params);
-	};
-	 fileLoader.addCommand(tileExcludePelletCommand);*/
 
 	Command tilePlayerSpawnPointCommand;
 	tilePlayerSpawnPointCommand.command = "tile_player_spawn_point";
@@ -290,6 +266,7 @@ bool TeamAgainst::loadLevel(const std::string &levelPath) {
 	layoutCommand.commandType = COMMAND_MULTI_LINE;
 	layoutCommand.parseFunc = [&layoutOffset, this](ParseFuncParams params) {
 		int startingX = layoutOffset.GetX();
+		std::cout << "line:" << params.line << std::endl;
 		for (size_t c = 0; c < params.line.length(); ++c) {
 			Tile *tile = getTileForSymbol(params.line[c]);
 			if (tile) {
@@ -298,25 +275,25 @@ bool TeamAgainst::loadLevel(const std::string &levelPath) {
 					Excluder goal;
 
 					goal.init(
-							AARectangle(Vec2D(startingX, layoutOffset.GetY()), tile->width,
+							AARectangle(Vec2D(startingX, layoutOffset.GetY()), static_cast<int>(mTileWidth),
 									static_cast<int>(mTileHeight)));
 					mGoal.push_back(goal);
 				} else if (tile->collidablePlayer > 0) {
 					Excluder wall;
 					wall.init(
-							AARectangle(Vec2D(startingX, layoutOffset.GetY()), tile->width,
+							AARectangle(Vec2D(startingX, layoutOffset.GetY()), static_cast<int>(mTileWidth),
 									static_cast<int>(mTileHeight)));
 					mPlayerBoundaries.push_back(wall);
 				} else if (tile->collidableBall > 0) {
 					Excluder wall;
 					wall.init(
-							AARectangle(Vec2D(startingX, layoutOffset.GetY()), tile->width,
+							AARectangle(Vec2D(startingX, layoutOffset.GetY()), static_cast<int>(mTileWidth),
 									static_cast<int>(mTileHeight)));
 					mBallBoundaries.push_back(wall);
 				} else if (tile->collidableGoalie > 0) {
 					Excluder wall;
 					wall.init(
-							AARectangle(Vec2D(startingX, layoutOffset.GetY()), tile->width,
+							AARectangle(Vec2D(startingX, layoutOffset.GetY()), static_cast<int>(mTileWidth),
 									static_cast<int>(mTileHeight)));
 					mGoalieBoundaries.push_back(wall);
 				}
@@ -350,7 +327,7 @@ bool TeamAgainst::loadLevel(const std::string &levelPath) {
 					mExclusionTiles.push_back(*tile);
 				}
 
-				startingX += tile->width;
+				startingX += static_cast<int>(mTileWidth);
 			}
 		}
 		layoutOffset += Vec2D(0, mTileHeight);

@@ -51,7 +51,7 @@ private:
 	struct Tile {
 		Vec2D position = Vec2D::zero;
 		Vec2D offset = Vec2D::zero;
-		int width = 0;
+		//int width = 0;
 		int collidablePlayer = 0;
 		int collidableBall = 0;
 		int collidableGoalie = 0;
@@ -75,7 +75,6 @@ private:
 	std::vector<Vec2D> mDefendersSpawnPoints;
 	std::default_random_engine mGenerator;
 	const SpriteSheet *mnoptrSpriteSheet;
-
 	std::vector<Excluder> mPlayerBoundaries;
 	std::vector<Excluder> mBallBoundaries;
 	std::vector<Excluder> mGoalieBoundaries;
@@ -88,6 +87,12 @@ private:
 
 	Vec2D mLayoutOffset;
 	size_t mTileHeight;
+	size_t mTileWidth;
+	float meterWidth = 52.5;
+	float meterLength = 68.58;
+	float pixelWidth = 162;
+	float pixelHeight = 224;
+	float metersPerPixel = 0.315117394;
 };
 
 #endif /* GAMES_SOCCER_TEAMAGAINST_H_ */

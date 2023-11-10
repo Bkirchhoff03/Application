@@ -93,7 +93,6 @@ PlayerMovement DefenderAI::update(uint32_t dt, const Player &player, const TeamA
 
 		//assert(possibleDirections.size() >= 1 && "Why can't we go anywhere?");
 		if (possibleDirections.size() == 0) {
-
 			std::cout << mName << " can't go anywhere!" << std::endl;
 			std::cout << mState << " is the state" << std::endl;
 			assert(false && "Why can't we go anywhere?");

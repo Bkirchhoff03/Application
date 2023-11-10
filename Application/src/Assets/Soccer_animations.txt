@@ -1,0 +1,110 @@
+:animation move_left
+:sprite_sheet SoccerSprites
+:size 26 26
+:fps 15
+
+:frame_keys 4
+
+player_moving_left_1
+player_moving_left_2
+player_moving_left_1
+player_moving_left_3
+
+:animation move_right
+:sprite_sheet SoccerSprites
+:size 26 26
+:fps 15
+
+:frame_keys 4
+
+player_moving_right_1
+player_moving_right_2
+player_moving_right_1
+player_moving_right_3
+
+:animation move_up
+:sprite_sheet SoccerSprites
+:size 26 26
+:fps 15
+
+:frame_keys 4
+
+player_moving_up_1
+player_moving_up_2
+player_moving_up_1
+player_moving_up_3
+
+:animation move_down
+:sprite_sheet SoccerSprites
+:size 26 26
+:fps 15
+
+:frame_keys 4
+
+player_moving_down_1
+player_moving_down_2
+player_moving_down_1
+player_moving_down_3
+
+
+:animation move_up_left
+:sprite_sheet SoccerSprites
+:size 26 26
+:fps 15
+
+:frame_keys 4
+
+player_moving_up_left_1
+player_moving_up_left_2
+player_moving_up_left_1
+player_moving_up_left_3
+
+:animation move_up_right
+:sprite_sheet SoccerSprites
+:size 26 26
+:fps 15
+
+:frame_keys 4
+
+player_moving_up_right_1
+player_moving_up_right_2
+player_moving_up_right_1
+player_moving_up_right_3
+
+:animation move_down_right
+:sprite_sheet SoccerSprites
+:size 26 26
+:fps 15
+
+:frame_keys 4
+
+player_moving_down_right_1
+player_moving_down_right_2
+player_moving_down_right_1
+player_moving_down_right_3
+
+:animation move_down_left
+:sprite_sheet SoccerSprites
+:size 26 26
+:fps 15
+
+:frame_keys 4
+
+player_moving_down_left_1
+player_moving_down_left_2
+player_moving_down_left_1
+player_moving_down_left_3
+
+
+:animation ball
+:sprite_sheet SoccerSprites
+:size 7 7
+:fps 12
+
+:frame_keys 4
+
+ball_1
+ball_2
+ball_3
+ball_4
+

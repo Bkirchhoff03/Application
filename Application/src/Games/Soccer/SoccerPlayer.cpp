@@ -52,6 +52,7 @@ void SoccerPlayer::update(uint32_t dt) {
 	}
 }
 void SoccerPlayer::draw(Screen &screen) {
+
 	mSprite.draw(screen);
 }
 

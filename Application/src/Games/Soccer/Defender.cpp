@@ -8,7 +8,7 @@
 #include "Defender.h"
 
 Defender::Defender() :
-		mDelegate(nullptr), mCanChangeDirection(true), mState(PLAYER_STOPPED) {
+		mDelegate(nullptr), mCanChangeDirection(true), mState(PLAYER_STOPPED), mIsInZone(true) {
 
 }
 void Defender::init(const SpriteSheet &spriteSheet, const std::string &animationsPath, const Vec2D &intialPos,
@@ -116,4 +116,10 @@ void Defender::setDefenderState(PlayerState state) {
 
 void Defender::ballLost() {
 
+}
+
+void Defender::releaseFromZone() {
+	if (mIsInZone) {
+		mIsInZone = false;
+	}
 }
