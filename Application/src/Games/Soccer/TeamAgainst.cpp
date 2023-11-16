@@ -23,6 +23,8 @@ bool TeamAgainst::init(const std::string &levelPath, const SpriteSheet *noptrSpr
 	if (levelLoaded) {
 		resetLevel();
 	}
+	bounds.width = mLayoutOffset.GetX();
+	bounds.height = mLayoutOffset.GetY();
 	return levelLoaded;
 }
 void TeamAgainst::update(uint32_t dt, Player &player, std::vector<Defender> &defenders,
@@ -75,6 +77,24 @@ void TeamAgainst::draw(Screen &screen) {
 
 	screen.draw(mBGImage, bgSprite, Vec2D(0, 20));
 }
+
+void TeamAgainst::makeDefenderZones(std::vector<Defender>& defenders, std::vector<DefenderAI>& defenderAIs) {
+	int width = mBGImage.getWidth();
+	int height = mBGImage.getHeight();
+	int zoneWidth = width / 4;
+	int zoneHeight = height / 3;
+	defenders[LEFT_BACK].setZone(AARectangle(Vec2D(0, 20), zoneWidth, height));
+	defenders[RIGHT_BACK].setZone(AARectangle(Vec2D(width-zoneWidth, 20), zoneWidth, height));
+	defenders[CENTER_BACK].setZone(AARectangle(Vec2D(zoneWidth, zoneHeight+20), zoneWidth*2, zoneHeight));
+	defenders[CENTER_DEFENSIVE_MIDFIELDER].setZone(AARectangle(Vec2D(zoneWidth, (zoneHeight*2)+20), zoneWidth*2, zoneHeight));
+	defenders[GOALKEEPER].setZone(AARectangle(Vec2D(zoneWidth, 20), zoneWidth*2, zoneHeight));
+	defenderAIs[LEFT_BACK].setZone(defenders[LEFT_BACK].zoneBoundingBox());
+	defenderAIs[RIGHT_BACK].setZone(defenders[RIGHT_BACK].zoneBoundingBox());
+	defenderAIs[CENTER_BACK].setZone(defenders[CENTER_BACK].zoneBoundingBox());
+	defenderAIs[CENTER_DEFENSIVE_MIDFIELDER].setZone(defenders[CENTER_DEFENSIVE_MIDFIELDER].zoneBoundingBox());
+	defenderAIs[GOALKEEPER].setZone(defenders[GOALKEEPER].zoneBoundingBox());
+}
+
 
 bool TeamAgainst::willCollide(const AARectangle &aBBox, PlayerMovement direction) const {
 	AARectangle bbox = aBBox;

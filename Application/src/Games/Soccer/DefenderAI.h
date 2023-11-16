@@ -52,6 +52,7 @@ public:
 	inline bool isEnteringZone() const {
 		return mState == DEFENDER_AI_STATE_GO_TO_ZONE;
 	}
+	void setZone(const AARectangle rect);
 
 	virtual void defenderDelegateDefenderStateChangeTo(PlayerState lastState, PlayerState state) override;
 	virtual void defenderWasReleasedFromZone() override;
@@ -74,6 +75,7 @@ private:
 	std::default_random_engine mAIRandomGenerator;
 	DefenderAIState mState;
 	DefenderAIState mLastState;
+	AARectangle zone;
 	uint64_t mTimer;
 };
 

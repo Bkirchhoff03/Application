@@ -17,6 +17,7 @@
 #include "DefenderAI.h"
 #include "SpriteSheet.h"
 #include "BMPImage.h"
+#include "Utils.h"
 #include <random>
 
 class Screen;
@@ -38,9 +39,13 @@ public:
 	inline Vec2D getPlayerSpawnLocation() const {
 		return mPlayerSpawnLocation;
 	}
+	void makeDefenderZones(std::vector<Defender> &defenders, std::vector<DefenderAI> &defenderAIs);
 	bool isGameOver() const;
 	void increaseLevel();
 	void resetToFirstGame();
+	inline Size getBounds() const {
+		return bounds;
+	}
 	inline const std::vector<Vec2D>& getDefenderSpawnPoints() {
 		return mDefendersSpawnPoints;
 	}
@@ -92,6 +97,7 @@ private:
 	float meterLength = 68.58;
 	float pixelWidth = 162;
 	float pixelHeight = 224;
+	Size bounds;
 	float metersPerPixel = 0.315117394;
 };
 

@@ -32,6 +32,7 @@ enum PlayerMovement {
 Vec2D getMovementVector(PlayerMovement direction);
 PlayerMovement getOppositeDirection(PlayerMovement direction);
 std::vector<PlayerMovement> getPerpendicularMovements(PlayerMovement direction);
+std::vector<PlayerMovement> getPossibleMovementsBasedOffTarget(Vec2D target, Vec2D location);
 std::vector<PlayerMovement> getOtherDirection(PlayerMovement direction);
 
 #endif /* GAMES_SOCCER_SOCCERGAMEUTILS_H_ */

@@ -7,7 +7,6 @@
 
 #include "SoccerGameUtils.h"
 
-
 Vec2D getMovementVector(PlayerMovement direction) {
 	if (direction == PLAYER_MOVEMENT_LEFT) {
 		return Vec2D(-1, 0);
@@ -48,6 +47,25 @@ std::vector<PlayerMovement> getPerpendicularMovements(PlayerMovement direction) 
 	}
 	return perpendicularDirections;
 }
+
+std::vector<PlayerMovement> getPossibleMovementsBasedOffTarget(Vec2D target, Vec2D location) {
+	std::vector<PlayerMovement> possibleMovements;
+	if (target.GetX() < location.GetX()) {
+		possibleMovements.push_back(PLAYER_MOVEMENT_LEFT);
+	}
+	else if (target.GetX() > location.GetX()) {
+		possibleMovements.push_back(PLAYER_MOVEMENT_RIGHT);
+	}
+	if (target.GetY() < location.GetY()) {
+		possibleMovements.push_back(PLAYER_MOVEMENT_UP);
+	}
+	else if (target.GetY() > location.GetY()) {
+		possibleMovements.push_back(PLAYER_MOVEMENT_DOWN);
+	}
+	return possibleMovements;
+	
+}
+
 std::vector<PlayerMovement> getOtherDirection(PlayerMovement direction) {
 	std::vector<PlayerMovement> directions;
 	for (int dir = PlayerMovement::PLAYER_MOVEMENT_NONE + 1; dir <= PLAYER_MOVEMENT_RIGHT; ++dir) {

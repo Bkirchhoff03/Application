@@ -8,11 +8,11 @@
 #include "Defender.h"
 
 Defender::Defender() :
-		mDelegate(nullptr), mCanChangeDirection(true), mState(PLAYER_STOPPED), mIsInZone(true) {
+	mDelegate(nullptr), mCanChangeDirection(true), mState(PLAYER_STOPPED), mIsInZone(true) {
 
 }
-void Defender::init(const SpriteSheet &spriteSheet, const std::string &animationsPath, const Vec2D &intialPos,
-		uint32_t movementSpeed, bool updateSpriteOnMovement, const Color &spriteColor) {
+void Defender::init(const SpriteSheet& spriteSheet, const std::string& animationsPath, const Vec2D& intialPos,
+	uint32_t movementSpeed, bool updateSpriteOnMovement, const Color& spriteColor) {
 	SoccerPlayer::init(spriteSheet, animationsPath, intialPos, movementSpeed, updateSpriteOnMovement, spriteColor);
 	mInitialPos = intialPos;
 	resetToFirstPosition();
@@ -26,36 +26,51 @@ void Defender::resetToFirstPosition() {
 	mSprite.setPosition(mInitialPos);
 	setMovementDirection(PLAYER_MOVEMENT_NONE);
 	setDefenderState(PLAYER_STOPPED);
+	setAnimation("defender_movement_down", true);
+
 	mCanChangeDirection = true;
 	if (mDelegate) {
 		mDelegate->defenderWasResetToZone();
 	}
 
 }
+
+void Defender::setZone(const AARectangle rect) {
+	zoneBBox = rect;
+}
+
+
 void Defender::setMovementDirection(PlayerMovement direction) {
 	SoccerPlayer::setMovementDirection(direction);
 	PlayerMovement movementDir = getMovementDirection();
 
 	if (mState == PLAYER_STOPPED || mState == PLAYER_SPRINTING || mState == PLAYER_RUNNING || mState == PLAYER_JOGGING
-			|| mState == PLAYER_SLIDING || mState == PLAYER_TACKLING) {
+		|| mState == PLAYER_SLIDING || mState == PLAYER_TACKLING) {
 		if (movementDir == PLAYER_MOVEMENT_RIGHT) {
 			setAnimation("defender_movement_right", true);
-		} else if (movementDir == PLAYER_MOVEMENT_UP) {
+		}
+		else if (movementDir == PLAYER_MOVEMENT_UP) {
 			setAnimation("defender_movement_up", true);
-		} else if (movementDir == PLAYER_MOVEMENT_DOWN) {
+		}
+		else if (movementDir == PLAYER_MOVEMENT_DOWN) {
 			setAnimation("defender_movement_down", true);
-		} else if (movementDir == PLAYER_MOVEMENT_LEFT) {
+		}
+		else if (movementDir == PLAYER_MOVEMENT_LEFT) {
 			setAnimation("defender_movement_left", true);
 		}
-	} else if (mState == PLAYER_STOPPED_WITH_BALL || mState == PLAYER_SPRINTING_WITH_BALL
-			|| mState == PLAYER_RUNNING_WITH_BALL || mState == PLAYER_JOGGING_WITH_BALL) {
+	}
+	else if (mState == PLAYER_STOPPED_WITH_BALL || mState == PLAYER_SPRINTING_WITH_BALL
+		|| mState == PLAYER_RUNNING_WITH_BALL || mState == PLAYER_JOGGING_WITH_BALL) {
 		if (movementDir == PLAYER_MOVEMENT_RIGHT) {
 			setAnimation("defender_movement_with_ball_right", true);
-		} else if (movementDir == PLAYER_MOVEMENT_UP) {
+		}
+		else if (movementDir == PLAYER_MOVEMENT_UP) {
 			setAnimation("defender_movement_with_ball_up", true);
-		} else if (movementDir == PLAYER_MOVEMENT_DOWN) {
+		}
+		else if (movementDir == PLAYER_MOVEMENT_DOWN) {
 			setAnimation("defender_movement_with_ball_down", true);
-		} else if (movementDir == PLAYER_MOVEMENT_LEFT) {
+		}
+		else if (movementDir == PLAYER_MOVEMENT_LEFT) {
 			setAnimation("defender_movement_with_ball_left", true);
 		}
 	}
@@ -64,17 +79,25 @@ void Defender::setMovementDirection(PlayerMovement direction) {
 void Defender::stop() {
 	setMovementDirection(PLAYER_MOVEMENT_NONE);
 }
+
+void Defender::setStateToDefending() {
+	if (!isWithBall()) {
+		setDefenderState(PLAYER_JOGGING);
+	}
+}
+
+
 void Defender::setDefenderState(PlayerState state) {
 	if (mDelegate) {
 		mDelegate->defenderDelegateDefenderStateChangeTo(mState, state);
 	}
-	if (mState == PLAYER_STOPPED || mState == PLAYER_RUNNING || mState == PLAYER_JOGGING || mState == PLAYER_SPRINTING
-			|| mState == PLAYER_TACKLING || mState == PLAYER_SLIDING) {
-		if (state == PLAYER_STOPPED_WITH_BALL || state == PLAYER_RUNNING_WITH_BALL || state == PLAYER_JOGGING_WITH_BALL
-				|| state == PLAYER_SPRINTING_WITH_BALL) {
-			setAnimation(" ", true);
-		}
-	}
+	//if (mState == PLAYER_STOPPED || mState == PLAYER_RUNNING || mState == PLAYER_JOGGING || mState == PLAYER_SPRINTING
+	//		|| mState == PLAYER_TACKLING || mState == PLAYER_SLIDING) {
+	//	if (state == PLAYER_STOPPED_WITH_BALL || state == PLAYER_RUNNING_WITH_BALL || state == PLAYER_JOGGING_WITH_BALL
+	//			|| state == PLAYER_SPRINTING_WITH_BALL) {
+	//		setAnimation("defender_movement_with_ball_down", true);
+	//	}
+	//}
 	mState = state;
 	switch (mState) {
 	case PLAYER_STOPPED:
