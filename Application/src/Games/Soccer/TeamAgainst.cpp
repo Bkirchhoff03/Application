@@ -12,8 +12,13 @@
 #include "App.h"
 #include "Circle.h"
 #include "Defender.h"
+#include "SoccerBall.h"
 #include <cassert>
 
+TeamAgainst& TeamAgainst::singleton() {
+	static TeamAgainst theTeamAgainst;
+	return theTeamAgainst;
+}
 bool TeamAgainst::init(const std::string &levelPath, const SpriteSheet *noptrSpriteSheet) {
 	mnoptrSpriteSheet = noptrSpriteSheet;
 	std::random_device r;
@@ -23,10 +28,12 @@ bool TeamAgainst::init(const std::string &levelPath, const SpriteSheet *noptrSpr
 	if (levelLoaded) {
 		resetLevel();
 	}
+	bounds.SetX(bounds.GetX() * mTileWidth);
+	bounds.SetY(bounds.GetY() * mTileHeight);
 	return levelLoaded;
 }
 void TeamAgainst::update(uint32_t dt, Player &player, std::vector<Defender> &defenders,
-		std::vector<DefenderAI> &defenderAIs) {
+		std::vector<DefenderAI> &defenderAIs, SoccerBall &soccerBall) {
 	for (const Excluder &wall : mPlayerBoundaries) {
 		BoundaryEdge edge;
 		if (wall.hasCollided(player.getBoundingBox(), edge)) {
@@ -43,13 +50,23 @@ void TeamAgainst::update(uint32_t dt, Player &player, std::vector<Defender> &def
 			}
 		}
 	}
-	//TO-DO add ball boundaries
 
-	/*for (const Excluder &ballWall : mBallBoundaries) {
+	for (const Excluder &ballWall : mBallBoundaries) {
 		BoundaryEdge edge;
-	 }*/
+		if (ballWall.hasCollided(soccerBall.getBoundingBox(), edge)) {
+			soccerBall.bounce(edge);
+		}
+	}
+	
+	for (const Excluder &goalWall : mGoal) {
+		BoundaryEdge edge;
+		if (goalWall.hasCollided(soccerBall.getBoundingBox(), edge)) {
+			player.addToScore(1);
+			return;
+		}
+	}
 
-	for (Tile t : mTiles) {
+	/*for (Tile t : mTiles) {
 		if (t.isOutOfBoundsTile) {
 			AARectangle teleportTileAABB(t.position, static_cast<float>(mTileWidth), static_cast<float>(mTileHeight));
 
@@ -66,7 +83,7 @@ void TeamAgainst::update(uint32_t dt, Player &player, std::vector<Defender> &def
 				}
 			}
 		}
-	}
+	}*/
 }
 void TeamAgainst::draw(Screen &screen) {
 	Sprite bgSprite;
@@ -75,6 +92,44 @@ void TeamAgainst::draw(Screen &screen) {
 
 	screen.draw(mBGImage, bgSprite, Vec2D(0, 20));
 }
+
+void TeamAgainst::makeDefenderZones(std::vector<Defender>& defenders, std::vector<DefenderAI>& defenderAIs) {
+	int width = mBGImage.getWidth();
+	int height = mBGImage.getHeight();
+	int zoneWidth = width / 4;
+	int zoneHeight = height / 3;
+	defenders[RIGHT_BACK].setZone(AARectangle(Vec2D(0, 20), zoneWidth, height));
+	defenders[LEFT_BACK].setZone(AARectangle(Vec2D(width-zoneWidth, 20), zoneWidth, height));
+	defenders[CENTER_BACK].setZone(AARectangle(Vec2D(zoneWidth, zoneHeight+20), zoneWidth*2, zoneHeight));
+	defenders[CENTER_DEFENSIVE_MIDFIELDER].setZone(AARectangle(Vec2D(zoneWidth, (zoneHeight*2)+20), zoneWidth*2, zoneHeight));
+	defenders[GOALKEEPER].setZone(AARectangle(Vec2D(zoneWidth, 20), zoneWidth*2, zoneHeight));
+	defenderAIs[LEFT_BACK].setZone(defenders[LEFT_BACK].zoneBoundingBox());
+	defenderAIs[RIGHT_BACK].setZone(defenders[RIGHT_BACK].zoneBoundingBox());
+	defenderAIs[CENTER_BACK].setZone(defenders[CENTER_BACK].zoneBoundingBox());
+	defenderAIs[CENTER_DEFENSIVE_MIDFIELDER].setZone(defenders[CENTER_DEFENSIVE_MIDFIELDER].zoneBoundingBox());
+	defenderAIs[GOALKEEPER].setZone(defenders[GOALKEEPER].zoneBoundingBox());
+}
+bool TeamAgainst::willCollide(const Defender &defender, const DefenderAI &defenderAI, PlayerMovement direction,
+		const AARectangle &aBBox) const {
+	AARectangle bbox = defender.getBoundingBox();
+	bbox.moveBy(getMovementVector(direction));
+	return bbox.intersects(aBBox);
+}
+bool TeamAgainst::willCollide(const SoccerBall &soccerBall, PlayerMovement direction) const {
+	AARectangle bbox = soccerBall.getBoundingBox();
+
+	bbox.moveBy(getMovementVector(direction));
+
+	BoundaryEdge edge;
+
+	for (const Excluder &wall : mBallBoundaries) {
+		if (wall.hasCollided(bbox, edge)) {
+			return true;
+		}
+	}
+	return false;
+}
+
 
 bool TeamAgainst::willCollide(const AARectangle &aBBox, PlayerMovement direction) const {
 	AARectangle bbox = aBBox;
@@ -88,14 +143,6 @@ bool TeamAgainst::willCollide(const AARectangle &aBBox, PlayerMovement direction
 			return true;
 		}
 	}
-	//TO-DO implement ball boundaries
-	/*
-	for (const Excluder &gate : mGate) {
-		if (gate.hasCollided(bbox, edge)) {
-			return true;
-		}
-	}
-	 */
 	return false;
 }
 bool TeamAgainst::willCollide(const Defender &defender, const DefenderAI &defenderAI, PlayerMovement direction) const {
@@ -105,17 +152,10 @@ bool TeamAgainst::willCollide(const Defender &defender, const DefenderAI &defend
 	BoundaryEdge edge;
 	for (const Excluder &wall : mPlayerBoundaries) {
 		if (wall.hasCollided(bbox, edge)) {
+			std::cout << "defender colliding" << std::endl;
 			return true;
 		}
 	}
-	//TO-DO implement ball walls
-	/*
-	for (const Excluder &gate : mGate) {
-		if (!(ghostAI.isEnteringPen() || ghostAI.wantsToLeavePen()) && gate.hasCollided(bbox, edge)) {
-			return true;
-		}
-	}
-	 */
 	return false;
 }
 void TeamAgainst::resetLevel() {
@@ -187,10 +227,17 @@ bool TeamAgainst::loadLevel(const std::string &levelPath) {
 	};
 	fileLoader.addCommand(tilePlayerCollisionCommand);
 
+	Command boundsCommand;
+	boundsCommand.command = "bounds";
+	boundsCommand.parseFunc = [this](ParseFuncParams params) {
+		bounds = FileCommandLoader::readSize(params);
+	};
+	fileLoader.addCommand(boundsCommand);
+
 	Command tileGoalieCollisionCommand;
 	tileGoalieCollisionCommand.command = "tile_goalie_collision";
 	tileGoalieCollisionCommand.parseFunc = [this](ParseFuncParams params) {
-		mTiles.back().collidableBall = FileCommandLoader::readInt(params);
+		//mTiles.back().collidableBall = FileCommandLoader::readInt(params);
 	};
 	fileLoader.addCommand(tileGoalieCollisionCommand);
 
@@ -266,7 +313,7 @@ bool TeamAgainst::loadLevel(const std::string &levelPath) {
 	layoutCommand.commandType = COMMAND_MULTI_LINE;
 	layoutCommand.parseFunc = [&layoutOffset, this](ParseFuncParams params) {
 		int startingX = layoutOffset.GetX();
-		std::cout << "line:" << params.line << std::endl;
+		//std::cout << "line:" << params.line << std::endl;
 		for (size_t c = 0; c < params.line.length(); ++c) {
 			Tile *tile = getTileForSymbol(params.line[c]);
 			if (tile) {

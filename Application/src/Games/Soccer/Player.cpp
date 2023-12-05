@@ -31,7 +31,20 @@ void Player::setMovementDirection(PlayerMovement movement) {
 	} else if (movement == PLAYER_MOVEMENT_UP && currentDirection != PLAYER_MOVEMENT_UP) {
 		setAnimation("move_up", true);
 		resetDelta();
+	} else if (movement == PLAYER_MOVEMENT_LEFT_UP && currentDirection != PLAYER_MOVEMENT_LEFT_UP) {
+		setAnimation("move_up_left", true);
+		resetDelta();
+	} else if (movement == PLAYER_MOVEMENT_LEFT_DOWN && currentDirection != PLAYER_MOVEMENT_LEFT_DOWN) {
+		setAnimation("move_down_left", true);
+		resetDelta();
+	} else if (movement == PLAYER_MOVEMENT_RIGHT_UP && currentDirection != PLAYER_MOVEMENT_RIGHT_UP) {
+		setAnimation("move_up_right", true);
+		resetDelta();
+	} else if (movement == PLAYER_MOVEMENT_RIGHT_DOWN && currentDirection != PLAYER_MOVEMENT_RIGHT_DOWN) {
+		setAnimation("move_down_right", true);
+		resetDelta();
 	}
+	setMovementSpeed(50);
 	SoccerPlayer::setMovementDirection(movement);
 }
 
@@ -43,5 +56,6 @@ void Player::resetScore() {
 }
 
 void Player::addToScore(uint32_t value) {
+	mScore += value;
 }
 

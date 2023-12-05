@@ -19,10 +19,11 @@ public:
 
 	inline void setTopLeftPoint(const Vec2D& topLeft) {mPoints[0] = topLeft;}
 	inline void setBottomRightPoint(const Vec2D& bottomRight) {mPoints[1] = bottomRight;}
-
+	static AARectangle overlappingRectangle(const AARectangle& r1, const AARectangle& r2);
 	Vec2D getTopLeftPoint() const {return mPoints[0];}
 	Vec2D getBottomRightPoint() const {return mPoints[1];}
 	bool operator<(const AARectangle& rect) const;
+	AARectangle operator-(const AARectangle& rect) const;
 	float getWidth() const;
 	float getHeight() const;
 

@@ -14,7 +14,7 @@ void FileCommandLoader::addCommand(const Command &command) {
 }
 bool FileCommandLoader::loadFile(const std::string &filePath) {
 	std::ifstream inFile;
-	std::cout << "Starting to load file:" << filePath << std::endl;
+	//std::cout << "Starting to load file:" << filePath << std::endl;
 	inFile.open(filePath);
 
 	std::string line = "";
@@ -24,7 +24,7 @@ bool FileCommandLoader::loadFile(const std::string &filePath) {
 		return false;
 	}
 	while (!inFile.eof()) {
-		std::cout << "getting line, not at end of file" << std::endl;
+		//std::cout << "getting line, not at end of file" << std::endl;
 		std::getline(inFile, line);
 		std::cout << line << std::endl;
 		size_t commandPos = std::string::npos;
@@ -42,7 +42,7 @@ bool FileCommandLoader::loadFile(const std::string &filePath) {
 			dilimitPos += 1;
 
 			for (size_t commandIndex = 0; commandIndex < mCommands.size(); ++commandIndex) {
-				std::cout << "commandIndex:" << commandIndex << std::endl;
+				//std::cout << "commandIndex:" << commandIndex << std::endl;
 				if (commandStr == mCommands[commandIndex].command) {
 					if (mCommands[commandIndex].commandType == COMMAND_ONE_LINE) {
 						ParseFuncParams params;
@@ -54,7 +54,7 @@ bool FileCommandLoader::loadFile(const std::string &filePath) {
 						std::string numLines = line.substr(dilimitPos + 1);
 						int totalLines = std::stoi(numLines);
 						int lineNum = 0;
-						std::cout << " Total: " << totalLines << std::endl;
+						//std::cout << " Total: " << totalLines << std::endl;
 						while (lineNum < totalLines) {
 							//std::cout << "lineNum: " << lineNum << " Total: " << totalLines << std::endl;
 							std::getline(inFile, line);
@@ -76,7 +76,7 @@ bool FileCommandLoader::loadFile(const std::string &filePath) {
 
 		}
 	}
-	std::cout << "Reached end of file" << std::endl;
+	//std::cout << "Reached end of file" << std::endl;
 	return true;
 }
 

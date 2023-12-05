@@ -17,20 +17,27 @@
 #include "DefenderAI.h"
 #include "SpriteSheet.h"
 #include "BMPImage.h"
+#include "Utils.h"
 #include <random>
 
+class SoccerBall;
 class Screen;
 class Player;
 class Defender;
 
 class TeamAgainst {
 public:
+	static TeamAgainst& singleton();
 	bool init(const std::string &levelPath, const SpriteSheet *noptrSpriteSheet);
-	void update(uint32_t dt, Player &player, std::vector<Defender> &defenders, std::vector<DefenderAI> &defenderAIs);
+	void update(uint32_t dt, Player &player, std::vector<Defender> &defenders, std::vector<DefenderAI> &defenderAIs,
+			SoccerBall &soccerBall);
 	void draw(Screen &screen);
 
 	bool willCollide(const AARectangle &aBBox, PlayerMovement direction) const;
 	bool willCollide(const Defender &defender, const DefenderAI &defenderAI, PlayerMovement direction) const;
+	bool willCollide(const SoccerBall &soccerBall, PlayerMovement direction) const;
+	bool willCollide(const Defender &defender, const DefenderAI &defenderAI, PlayerMovement direction,
+			const AARectangle &aBBox) const;
 	void resetLevel();
 	inline Vec2D getLayoutOffset() const {
 		return mLayoutOffset;
@@ -38,9 +45,13 @@ public:
 	inline Vec2D getPlayerSpawnLocation() const {
 		return mPlayerSpawnLocation;
 	}
+	void makeDefenderZones(std::vector<Defender> &defenders, std::vector<DefenderAI> &defenderAIs);
 	bool isGameOver() const;
 	void increaseLevel();
 	void resetToFirstGame();
+	inline Vec2D getBounds() const {
+		return bounds;
+	}
 	inline const std::vector<Vec2D>& getDefenderSpawnPoints() {
 		return mDefendersSpawnPoints;
 	}
@@ -92,6 +103,7 @@ private:
 	float meterLength = 68.58;
 	float pixelWidth = 162;
 	float pixelHeight = 224;
+	Vec2D bounds;
 	float metersPerPixel = 0.315117394;
 };
 

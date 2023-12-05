@@ -9,12 +9,14 @@
 #define INPUT_GAMECONTROLLER_H_
 
 #include "InputAction.h"
+#include "SDL2/SDL_stdinc.h"
 #include <vector>
 
 class GameController {
 public:
 	GameController();
 	InputAction getActionForKey(InputKey key);
+	InputAction getActionForMultipleKeys(Uint8 *keys);
 	void addInputActionForKey(const ButtonAction &buttonAction);
 	void clearAll();
 
@@ -26,6 +28,10 @@ public:
 	static InputKey rightKey();
 	static InputKey upKey();
 	static InputKey downKey();
+	static InputKeys leftUpKey();
+	static InputKeys rightUpKey();
+	static InputKeys leftDownKey();
+	static InputKeys rightDownKey();
 
 	inline const MouseMovedAction getMouseMovedAction() {
 		return mMouseMovedAction;
