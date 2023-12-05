@@ -11,6 +11,7 @@
 #include "SoccerPlayer.h"
 #include "Color.h"
 #include "SoccerGameUtils.h"
+#include "Player.h"
 #include "AARectangle.h"
 
 enum DefenderName {
@@ -36,7 +37,7 @@ public:
 
 	virtual void setMovementDirection(PlayerMovement direction) override;
 	virtual void stop() override;
-
+	void checkIntersection(Player& player);
 	void resetToFirstPosition();
 	void setZone(const AARectangle rect);
 	inline bool isSliding() const {
@@ -67,6 +68,8 @@ public:
 		return !mIsInZone;
 	}
 	void setStateToDefending();
+	void setStateToReturnZone();
+	void setStateToInZone();
 	void releaseFromZone();
 	inline const uint32_t getTackleOdds() const {
 		return mTackleOdds;

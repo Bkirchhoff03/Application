@@ -71,9 +71,11 @@
 :tile_height 5
 :tile_width 4
 
+:bounds 47 51
+
 :layout_offset 0 20
 
-:layout 50
+:layout 51
 
 wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 woooooooooooooooooooooooooooooooooooooooooooow

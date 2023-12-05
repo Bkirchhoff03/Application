@@ -22,7 +22,7 @@ class Player;
 enum DefenderAIState {
 	DEFENDER_AI_STATE_START = 0,
 	DEFENDER_AI_STATE_IN_ATTACKING,
-	DEFENDER_AI_STATE_IN_ZONE,
+	DEFENDER_AI_STATE_IN_ZONE_STOPPED,
 	DEFENDER_AI_STATE_EXIT_ZONE,
 	DEFENDER_AI_STATE_GO_TO_ZONE,
 	DEFENDER_AI_STATE_DEFENDING,
@@ -30,7 +30,6 @@ enum DefenderAIState {
 	DEFENDER_AI_STATE_IS_STEALING,
 	DEFENDER_AI_STATE_IS_STEALING_FOUL,
 	DEFENDER_AI_STATE_PASSING
-
 };
 
 class DefenderAI: public DefenderDelegate {
@@ -47,10 +46,13 @@ public:
 		return mState == DEFENDER_AI_STATE_EXIT_ZONE;
 	}
 	inline bool isInZone() const {
-		return mState == DEFENDER_AI_STATE_IN_ZONE || mState == DEFENDER_AI_STATE_START;
+		return mState == DEFENDER_AI_STATE_IN_ZONE_STOPPED || mState == DEFENDER_AI_STATE_START;
 	}
 	inline bool isEnteringZone() const {
 		return mState == DEFENDER_AI_STATE_GO_TO_ZONE;
+	}
+	inline bool isDefending() {
+		return mState == DEFENDER_AI_STATE_DEFENDING;
 	}
 	void setZone(const AARectangle rect);
 

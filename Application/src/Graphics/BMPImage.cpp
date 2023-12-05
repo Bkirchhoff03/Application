@@ -10,7 +10,6 @@
 
 BMPImage::BMPImage() :
 		mWidth(0), mHeight(0) {
-
 }
 bool BMPImage::load(const std::string &path) {
 	SDL_Surface *bmpSurface = SDL_LoadBMP(path.c_str());

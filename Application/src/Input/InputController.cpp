@@ -50,13 +50,18 @@ void InputController::update(uint32_t dt) {
 				action(static_cast<InputState>(sdlEvent.button.state), position);
 			}
 			break;
-		case SDL_KEYDOWN:
 		case SDL_KEYUP:
-
+		case SDL_KEYDOWN:
 			if (mnoptrCurrentController) {
-				InputAction action = mnoptrCurrentController->getActionForKey(sdlEvent.key.keysym.sym);
-
-				action(dt, static_cast<InputState>(sdlEvent.key.state));
+				SDL_PumpEvents();
+				Uint8 *keysArray = const_cast<Uint8*>(SDL_GetKeyboardState(NULL));
+				InputAction actionKeys = mnoptrCurrentController->getActionForMultipleKeys(keysArray);
+				if (actionKeys != NULL) {
+					actionKeys(dt, static_cast<InputState>(sdlEvent.key.state));
+				} else {
+					InputAction action = mnoptrCurrentController->getActionForKey(sdlEvent.key.keysym.sym);
+					action(dt, static_cast<InputState>(sdlEvent.key.state));
+				}
 			}
 			break;
 		default:

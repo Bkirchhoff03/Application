@@ -18,6 +18,7 @@
 #include "Defender.h"
 #include "DefenderAI.h"
 #include "AARectangle.h"
+#include "SoccerBall.h"
 
 enum SoccerGameState {
 	GAME_STARTING = 0, IN_GAME, SCORED_ON, GAME_STOPPED, GAME_OVER
@@ -38,15 +39,17 @@ private:
 	void drawScore(Screen &screen);
 	void setupDefenders();
 
+	SoccerBall mSoccerBall;
 	PlayerMovement mPressedDirection;
 	SpriteSheet mPlayerSpriteSheet;
 	Player mPlayer;
-	TeamAgainst mTeamAgainst;
+	//TeamAgainst mTeamAgainst;
 	int mNumGoalsFor;
 	int mNumGoalsAgainst;
 	std::vector<Defender> mDefenders;
 	std::vector<DefenderAI> mDefenderAI;
 	uint32_t mTimer;
+	std::string mAnnouncement;
 	SoccerGameState mGameState;
 	uint32_t mLevelStartingTimer;
 	AARectangle mStringRect;

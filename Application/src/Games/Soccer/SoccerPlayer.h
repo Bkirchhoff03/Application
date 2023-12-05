@@ -43,8 +43,12 @@ public:
 	virtual void draw(Screen &screen);
 
 	virtual void stop();
-	AARectangle getDribbleBoundingBox() const;
-
+	Vec2D getDribbleBoundingPoint() const;
+	void setToDefended();
+	void setToNotDefended();
+	inline uint32_t getMovementSpeed() const {
+		return mMovementSpeed;
+	}
 	inline bool isFinishedAnimation() const {
 		return mSprite.isFinishedPlayingAnimation();
 	}
@@ -85,6 +89,7 @@ private:
 	Vec2D mDelta;
 	PlayerMovement mMovementDirection;
 	uint32_t mMovementSpeed;
+	uint32_t mLastMovementSpeed;
 	bool mUpdateSpriteOnUpdate;
 };
 

@@ -41,9 +41,9 @@ public:
 	inline void giveBall() {
 		mState = PLAYER_STOPPED_WITH_BALL;
 	}
+	void addToScore(uint32_t value);
 
 private:
-	void addToScore(uint32_t value);
 	uint32_t mScore;
 	PlayerState mState;
 	bool mIsLosingBall;

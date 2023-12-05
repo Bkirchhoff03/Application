@@ -38,33 +38,26 @@ PlayerMovement DefenderAI::update(uint32_t dt, const Player &player, const TeamA
 			mTimer = 0;
 		}
 		if (mState == DEFENDER_AI_STATE_START) {
-			setState(DEFENDER_AI_STATE_IN_ZONE);
+			setState(DEFENDER_AI_STATE_IN_ZONE_STOPPED);
 		}
 		if (mState == DEFENDER_AI_STATE_DOUBLE_TEAM) {
 			if (player.isWithoutBall()) {
 				setState(DEFENDER_AI_STATE_GO_TO_ZONE);
 			}
 		}
-		if (mState == DEFENDER_AI_STATE_IN_ZONE) {
-			
-			std::cout << "Zone size " << mnoptrDefender->zoneBoundingBox().getWidth() << " " << mnoptrDefender->zoneBoundingBox().getHeight() << std::endl;
-			std::cout << "Player size " << player.getBoundingBox().getWidth() << " " << player.getBoundingBox().getHeight() << std::endl;
-			std::cout << "colliding with zone " << mnoptrDefender->zoneBoundingBox().intersects(player.getBoundingBox()) << std::endl;
-			if (mnoptrDefender->zoneBoundingBox().intersects(player.getBoundingBox())) {
-
-				changeTarget(player.getBoundingBox().getCenterPoint());
-				setState(DEFENDER_AI_STATE_DEFENDING);
-				mnoptrDefender->setDefenderState(PLAYER_JOGGING);
-			} else {
-				//return PLAYER_MOVEMENT_NONE;
-			}
+		if (mState == DEFENDER_AI_STATE_GO_TO_ZONE
+				&& mnoptrDefender->getBoundingBox().getCenterPoint() == mDefenderZoneTarget) {
+			setState(DEFENDER_AI_STATE_IN_ZONE_STOPPED);
+			mnoptrDefender->setDefenderState(PLAYER_STOPPED);
 		}
+		/*
 
-		if (mState == DEFENDER_AI_STATE_GO_TO_ZONE && mnoptrDefender->getBoundingBox().intersects(zone)) {
-			setState(DEFENDER_AI_STATE_IN_ZONE);
+		if (mState == DEFENDER_AI_STATE_GO_TO_ZONE && mnoptrDefender->getBoundingBox().getCenterPoint() == mDefenderZoneTarget) {
+		 setState(DEFENDER_AI_STATE_IN_ZONE_STOPPED);
 			mnoptrDefender->setDefenderState(PLAYER_STOPPED);
 			//return PLAYER_MOVEMENT_NONE;
 		}
+		 */
 
 		if (mState == DEFENDER_AI_STATE_EXIT_ZONE && !mnoptrDefender->getBoundingBox().intersects(zone)) {
 			setState(DEFENDER_AI_STATE_DOUBLE_TEAM);
@@ -72,19 +65,16 @@ PlayerMovement DefenderAI::update(uint32_t dt, const Player &player, const TeamA
 		}
 
 		if (mState == DEFENDER_AI_STATE_DEFENDING) {
-			if (player.getBoundingBox().intersects(zone)) {
-				setState(DEFENDER_AI_STATE_DEFENDING);
-				mnoptrDefender->setDefenderState(PLAYER_JOGGING);
-			}
+			setState(DEFENDER_AI_STATE_DEFENDING);
+			mnoptrDefender->setDefenderState(PLAYER_SPRINTING);
+			//changeTarget(getChaseTarget(dt, player, teamAgainst, defenders));
+			changeTarget(player.getBoundingBox().getCenterPoint());
 		}
 
 		PlayerMovement currentDirection = mnoptrDefender->getMovementDirection();
 
 		std::vector<PlayerMovement> tempDirections;
 		std::vector<PlayerMovement> possibleDirections;
-		std::cout << mState << " is the state" << std::endl;
-		std::cout << mTarget.GetX() << " " << mTarget.GetY() << " is the target" << std::endl;
-		std::cout << mnoptrDefender->getMovementDirection() << " is the movement direction" << std::endl;
 
 		possibleDirections = getPossibleMovementsBasedOffTarget(mTarget, mnoptrDefender->position());
 
@@ -121,10 +111,18 @@ PlayerMovement DefenderAI::update(uint32_t dt, const Player &player, const TeamA
 			std::uniform_int_distribution<size_t> distribution(0, possibleDirections.size() - 1);
 			return possibleDirections[static_cast<int>(distribution(mAIRandomGenerator))];
 		}
-
+		
 		if (mState == DEFENDER_AI_STATE_PASSING) {
 			changeTarget(getChaseTarget(dt, player, teamAgainst, defenders));
 		}
+
+		/*if (mState == DEFENDER_AI_STATE_DEFENDING) {
+			changeTarget(getChaseTarget(dt, player, teamAgainst, defenders));
+		}
+		if (mState == DEFENDER_AI_STATE_GO_TO_ZONE) {
+			changeTarget(mDefenderZoneTarget);
+		}*/
+		
 
 		PlayerMovement directionToGoIn = PLAYER_MOVEMENT_NONE;
 
@@ -176,42 +174,59 @@ void DefenderAI::draw(Screen &screen) {
 }
 
 void DefenderAI::defenderDelegateDefenderStateChangeTo(PlayerState lastState, PlayerState state) {
-	if (mnoptrDefender && mnoptrDefender->isRealeasedFromZone() && !(isInZone() || wantsToLeaveZone())) {
+	if (mnoptrDefender && mnoptrDefender->isRealeasedFromZone() && !(isInZone() || wantsToLeaveZone() || isDefending())) {
 		mnoptrDefender->setMovementDirection(getOppositeDirection(mnoptrDefender->getMovementDirection()));
 	}
 	if (lastState == PLAYER_STOPPED && state == PLAYER_JOGGING) {
+		setState(DEFENDER_AI_STATE_GO_TO_ZONE);
+	}
+	else if (lastState == PLAYER_STOPPED && state == PLAYER_SPRINTING) {
 		setState(DEFENDER_AI_STATE_DEFENDING);
 	}
-	if (state == PLAYER_STOPPED) {
+	else if (lastState == PLAYER_SPRINTING && state == PLAYER_JOGGING) {
 		setState(DEFENDER_AI_STATE_GO_TO_ZONE);
-	} else if ((lastState == PLAYER_JOGGING || lastState == PLAYER_RUNNING) && state == PLAYER_SPRINTING) {
-		if (mState == DEFENDER_AI_STATE_DEFENDING || mState == DEFENDER_AI_STATE_IN_ZONE) {
-			setState(mLastState);
-		}
+	}
+	else if (lastState == PLAYER_JOGGING && state == PLAYER_STOPPED) {
+		setState(DEFENDER_AI_STATE_IN_ZONE_STOPPED);
+	}
+	else if (lastState == PLAYER_SPRINTING && state == PLAYER_STOPPED) {
+		setState(DEFENDER_AI_STATE_IN_ZONE_STOPPED);
+	}
+	else if (lastState == PLAYER_JOGGING && state == PLAYER_JOGGING) {
+		setState(DEFENDER_AI_STATE_GO_TO_ZONE);
+	}
+	else if (lastState == PLAYER_JOGGING && state == PLAYER_SPRINTING) {
+		setState(DEFENDER_AI_STATE_DEFENDING);
+	} else if (state == PLAYER_STOPPED) {
+		setState(DEFENDER_AI_STATE_DEFENDING);
 	}
 }
+
 void DefenderAI::defenderWasReleasedFromZone() {
 	if (mState == DEFENDER_AI_STATE_START) {
-		setState(DEFENDER_AI_STATE_IN_ZONE);
+		setState(DEFENDER_AI_STATE_IN_ZONE_STOPPED);
 	}
 }
+
 void DefenderAI::defenderWasResetToZone() {
-	setState(DEFENDER_AI_STATE_START);
+	setState(DEFENDER_AI_STATE_IN_ZONE_STOPPED);
 }
 
 void DefenderAI::setState(DefenderAIState state) {
-	if (mState == DEFENDER_AI_STATE_IN_ZONE || mState == DEFENDER_AI_STATE_DEFENDING) {
+	if (mState == DEFENDER_AI_STATE_IN_ZONE_STOPPED || mState == DEFENDER_AI_STATE_DEFENDING) {
 		mLastState = mState;
 	}
 	mState = state;
 
 	switch (state) {
-	case DEFENDER_AI_STATE_IN_ZONE:
+	case DEFENDER_AI_STATE_IN_ZONE_STOPPED:
+		changeTarget(mDefenderZoneTarget);
+		mnoptrDefender->setDefenderState(PLAYER_STOPPED);
 		break;
 	case DEFENDER_AI_STATE_GO_TO_ZONE: {
-		Vec2D target = { mDefenderZoneTarget.GetX() + mnoptrDefender->getBoundingBox().getWidth() / 2,
-				mDefenderZoneTarget.GetY() - mnoptrDefender->getBoundingBox().getHeight() / 2 };
-		changeTarget(target);
+		//Vec2D target = { mDefenderZoneTarget.GetX() + mnoptrDefender->getBoundingBox().getWidth() / 2,
+		//		mDefenderZoneTarget.GetY() - mnoptrDefender->getBoundingBox().getHeight() / 2 };
+		changeTarget(mDefenderZoneTarget);
 	}
 		break;
 	case DEFENDER_AI_STATE_EXIT_ZONE:
@@ -231,6 +246,7 @@ void DefenderAI::setState(DefenderAIState state) {
 void DefenderAI::changeTarget(const Vec2D &target) {
 	mTarget = target;
 }
+
 Vec2D DefenderAI::getChaseTarget(uint32_t dt, const Player &player, const TeamAgainst &teamAgainst,
 		const std::vector<Defender> &defenders) {
 	Vec2D target;
