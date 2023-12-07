@@ -58,6 +58,7 @@ public:
 	inline uint32_t getInGameTextYPos() const {
 		return mPlayerSpawnLocation.GetY();
 	}
+	void ballBounce(SoccerBall &soccerBall);
 private:
 	struct Tile {
 		Vec2D position = Vec2D::zero;

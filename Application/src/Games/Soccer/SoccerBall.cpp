@@ -20,16 +20,16 @@
 const float SoccerBall::RADIUS = 3.5f;
 
 SoccerBall::SoccerBall() :
-		SoccerBall(Vec2D::zero, SoccerBall::RADIUS) {
+	SoccerBall(Vec2D::zero, SoccerBall::RADIUS) {
 }
-SoccerBall::SoccerBall(SoccerBall &soccerBall) {
+SoccerBall::SoccerBall(SoccerBall& soccerBall) {
 	mBBox = soccerBall.mBBox;
 	mVelocity = soccerBall.mVelocity;
 	mState = soccerBall.mState;
 	mSpawnPosition = soccerBall.mSpawnPosition;
 }
-SoccerBall::SoccerBall(const Vec2D &pos, float radius) :
-		mBBox(pos - Vec2D(radius, radius), radius * 2.0f, radius * 2.0f), mVelocity(Vec2D::zero) {
+SoccerBall::SoccerBall(const Vec2D& pos, float radius) :
+	mBBox(pos - Vec2D(radius, radius), radius * 2.0f, radius * 2.0f), mVelocity(Vec2D::zero) {
 	mState = SOCCER_BALL_STATE_IN_PLAY_AT_REST;
 	mSpawnPosition = pos;
 }
@@ -43,24 +43,13 @@ void SoccerBall::update(uint32_t dt) {
 		mVelocity = Vec2D::zero;
 		mState = SOCCER_BALL_STATE_IN_PLAY_AT_REST;
 	}
-	/*std::cout << "SoccerBall::update() mVelocity: " << mVelocity << " SoccerBall position: "
-	 << mBBox.getCenterPoint().GetX() << " " << mBBox.getCenterPoint().GetY() << std::endl;*/
-	if (TeamAgainst::singleton().willCollide(*this, getPlayerMovementFromVector(mVelocity))) {
-		mVelocity.SetX(
-				mVelocity.GetX()
-						* getMovementVector(getOppositeDirection(getPlayerMovementFromVector(mVelocity))).GetX());
-		mVelocity.SetX(
-				mVelocity.GetY()
-						* getMovementVector(getOppositeDirection(getPlayerMovementFromVector(mVelocity))).GetY());
-	}
-	 else {
-		mBBox.moveBy(mVelocity * millisecondsToSeconds(dt));
-	}
+	mBBox.moveBy(mVelocity * millisecondsToSeconds(dt));
+
 }
-void SoccerBall::draw(Screen &screen) {
+void SoccerBall::draw(Screen& screen) {
 	screen.draw(Circle(mBBox.getCenterPoint(), (mBBox.getWidth() / 2.0f)), Color::black(), true, Color::black());
 }
-void SoccerBall::bounce(const BoundaryEdge &edge) {
+void SoccerBall::bounce(const BoundaryEdge& edge) {
 	Vec2D pointOnEdge;
 
 	makeFlushWithEdge(edge, pointOnEdge, false);
@@ -78,9 +67,9 @@ void SoccerBall::bounceOffOfSoccerPlayer(SoccerPlayer soccerPlayer) {
 	float playerSpeed = static_cast<float>(soccerPlayer.getMovementSpeed());
 	Vec2D playerVelocity = getMovementVector(soccerPlayer.getMovementDirection());
 
-    // Calculate the new velocity of the ball after bouncing off the player
+	// Calculate the new velocity of the ball after bouncing off the player
 	Vec2D newVelocity = playerVelocity * playerSpeed * 2;
 
-    // Update the ball's velocity
-    mVelocity = newVelocity;
+	// Update the ball's velocity
+	mVelocity = newVelocity;
 }

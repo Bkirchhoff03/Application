@@ -171,6 +171,15 @@ void TeamAgainst::increaseLevel() {
 void TeamAgainst::resetToFirstGame() {
 
 }
+void TeamAgainst::ballBounce(SoccerBall &soccerBall) {
+	for (const Excluder& ballWall : mBallBoundaries) {
+		BoundaryEdge edge;
+		if (ballWall.hasCollided(soccerBall.getBoundingBox(), edge)) {
+			soccerBall.bounce(edge);
+		}
+	}
+}
+
 bool TeamAgainst::loadLevel(const std::string &levelPath) {
 	FileCommandLoader fileLoader;
 

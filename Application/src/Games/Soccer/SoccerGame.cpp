@@ -134,15 +134,17 @@ void SoccerGame::update(uint32_t dt) {
 
 			defender.update(dt);
 			if (mPlayer.getBoundingBox().intersects(mSoccerBall.getBoundingBox())) {
-				if (TeamAgainst::singleton().willCollide(mSoccerBall, mPlayer.getMovementDirection())) {
+				/*if (TeamAgainst::singleton().willCollide(mSoccerBall, mPlayer.getMovementDirection())) {
+					mAnnouncement = OUT_OF_BOUNDS_STR;
 					resetGame();
 					return;
-				} else {
+				} else {*/
 					mSoccerBall.bounceOffOfSoccerPlayer(mPlayer);
-				}
+				//}
 			}
 			if (defender.getBoundingBox().intersects(mSoccerBall.getBoundingBox())) {
 				if (i == GOALKEEPER) {
+					mAnnouncement = GK_SAVE_STR;
 					resetGame();
 					return;
 				}
@@ -200,14 +202,16 @@ void SoccerGame::update(uint32_t dt) {
 		int afterScore = mPlayer.score();
 		if (nowScore != afterScore) {
 			//TeamAgainst::singleton().increaseLevel();
-			std::cout << "scored, reseting game" << std::endl;
+			//std::cout << "scored, reseting game" << std::endl;
+			mAnnouncement = SCORE_STR;
 			resetGame();
 		}
-		if (mSoccerBall.getBoundingBox().getCenterPoint().GetX() > TeamAgainst::singleton().getBounds().GetY()
+		if (mSoccerBall.getBoundingBox().getCenterPoint().GetX() > TeamAgainst::singleton().getBounds().GetX()
 				|| mSoccerBall.getBoundingBox().getCenterPoint().GetX() < 0
 				|| mSoccerBall.getBoundingBox().getCenterPoint().GetY() > TeamAgainst::singleton().getBounds().GetY()
 				|| mSoccerBall.getBoundingBox().getCenterPoint().GetY() < 0) {
-			std::cout << "out of bounds, reseting game" << std::endl;
+			//std::cout << "out of bounds, reseting game" << std::endl;
+			mAnnouncement = OUT_OF_BOUNDS_STR;
 			resetGame();
 		}
 	} /*else if (mGameState == SCORED_ON) {
@@ -250,6 +254,8 @@ void SoccerGame::draw(Screen &screen) {
 				BFXA_CENTER, BFYA_CENTER);
 
 		screen.draw(font, SCORE_STR + scorePlayerStr + " - " + scoreDefendersStr, textDrawPosition);
+		const auto &announcementFont = App::singleton().getFont();
+		screen.draw(announcementFont, mAnnouncement, Vec2D(1, 1));
 	}
 
 	if (mGameState == GAME_STARTING) {
@@ -336,7 +342,7 @@ void SoccerGame::setupDefenders() {
 	/*AARectangle gkZone = AARectangle(Vec2D(gkSpawn.GetX() - 30 + bounds.width, gkSpawn.GetY() - 22 + bounds.height), 96,
 	 50);*/
 	Gk.init(mPlayerSpriteSheet, App::singleton().getBasePath() + "Assets/Soccer_animations.txt", gkSpawn,
-			DEFENDER_MOVEMENT_SPEED, true, Color::red());
+			DEFENDER_MOVEMENT_SPEED, true, Color::orange());
 	Gk.setMovementDirection(PLAYER_MOVEMENT_LEFT);
 	mDefenders[GOALKEEPER] = Gk;
 	auto GkAI = DefenderAI();
@@ -351,7 +357,7 @@ void SoccerGame::setupDefenders() {
 	/*AARectangle lbZone = AARectangle(Vec2D(gkZone.getBottomRightPoint().GetX(), gkZone.getTopLeftPoint().GetY()), 30,
 	 160);*/
 	lb.init(mPlayerSpriteSheet, App::singleton().getBasePath() + "Assets/Soccer_animations.txt", lbSpawn,
-			DEFENDER_MOVEMENT_SPEED, true, Color::yellow());
+			DEFENDER_MOVEMENT_SPEED, true, Color::orange());
 	lb.setMovementDirection(PLAYER_MOVEMENT_LEFT);
 	mDefenders[LEFT_BACK] = lb;
 	auto lbAI = DefenderAI();
@@ -380,7 +386,7 @@ void SoccerGame::setupDefenders() {
 	//AARectangle rbZone = AARectangle(Vec2D(rbSpawn.GetX(), gkZone.getTopLeftPoint().GetY()), 30, 160);
 	Defender rb;
 	rb.init(mPlayerSpriteSheet, App::singleton().getBasePath() + "Assets/Soccer_animations.txt", rbSpawn,
-			DEFENDER_MOVEMENT_SPEED, true, Color::green());
+			DEFENDER_MOVEMENT_SPEED, true, Color::orange());
 	rb.setMovementDirection(PLAYER_MOVEMENT_LEFT);
 	mDefenders[RIGHT_BACK] = rb;
 	auto rbAI = DefenderAI();
@@ -395,7 +401,7 @@ void SoccerGame::setupDefenders() {
 	/*AARectangle cdmZone = AARectangle(Vec2D(rbZone.getTopLeftPoint().GetX(), rbZone.getBottomRightPoint().GetY()), 160,
 	 60);*/
 	cdm.init(mPlayerSpriteSheet, App::singleton().getBasePath() + "Assets/Soccer_animations.txt", cdmSpawn,
-			DEFENDER_MOVEMENT_SPEED, true, Color::blue());
+			DEFENDER_MOVEMENT_SPEED, true, Color::orange());
 	cdm.setMovementDirection(PLAYER_MOVEMENT_LEFT);
 	mDefenders[CENTER_DEFENSIVE_MIDFIELDER] = cdm;
 	auto cdmAI = DefenderAI();
