@@ -53,6 +53,7 @@ void Player::resetToFirstAnimation() {
 void Player::ballTakenByDefender() {
 }
 void Player::resetScore() {
+	mScore = 0;
 }
 
 void Player::addToScore(uint32_t value) {

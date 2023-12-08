@@ -326,3 +326,11 @@
 :yPos 45
 :width 5
 :height 8
+
+:sprite
+:key :
+:xPos 35
+:yPos 45
+:width 2
+:height 8
+

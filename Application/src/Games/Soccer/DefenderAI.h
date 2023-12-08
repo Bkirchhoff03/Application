@@ -15,6 +15,7 @@
 #include <stdint.h>
 #include <vector>
 
+class SoccerBall;
 class TeamAgainst;
 class Screen;
 class Player;
@@ -39,7 +40,7 @@ public:
 			const Vec2D &defenderPositionTarget, const Vec2D &defenderAttackingPosition, DefenderName name);
 
 	PlayerMovement update(uint32_t dt, const Player &player, const TeamAgainst &teamAgainst,
-			const std::vector<Defender> &defenders);
+			const std::vector<Defender> &defenders, SoccerBall& soccerBall);
 	void draw(Screen &screen);
 
 	inline bool wantsToLeaveZone() const {
@@ -65,7 +66,7 @@ private:
 	void setState(DefenderAIState state);
 	void changeTarget(const Vec2D &target);
 	Vec2D getChaseTarget(uint32_t dt, const Player &player, const TeamAgainst &teamAgainst,
-			const std::vector<Defender> &defender);
+			const std::vector<Defender> &defender, SoccerBall &soccerBall);
 
 	Vec2D mDefenderExitZonePosition;
 	Vec2D mDefenderZoneTarget;

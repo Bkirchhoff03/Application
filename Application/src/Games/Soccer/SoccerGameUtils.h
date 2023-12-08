@@ -43,5 +43,6 @@ std::vector<PlayerMovement> getPerpendicularMovements(PlayerMovement direction);
 std::vector<PlayerMovement> getPossibleMovementsBasedOffTarget(Vec2D target, Vec2D location);
 std::vector<PlayerMovement> getOtherDirection(PlayerMovement direction);
 PlayerMovement getPlayerMovementFromVector(const Vec2D &vec);
+std::string millisecondsToMinutesSecondsString(int milliseconds);
 
 #endif /* GAMES_SOCCER_SOCCERGAMEUTILS_H_ */

@@ -37,7 +37,6 @@ SoccerBall::SoccerBall(const Vec2D& pos, float radius) :
 void SoccerBall::update(uint32_t dt) {
 	if (mState == SOCCER_BALL_STATE_IN_PLAY_MOVING) {
 		mVelocity -= mVelocity.getUnitVec();
-		//mVelocity *= (1.0f - (SoccerBall::FRICTION * millisecondsToSeconds(dt)));
 	}
 	else {
 		mVelocity = Vec2D::zero;

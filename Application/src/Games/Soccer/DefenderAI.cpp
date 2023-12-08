@@ -8,6 +8,7 @@
 #include "Screen.h"
 #include "TeamAgainst.h"
 #include "Player.h"
+#include "SoccerBall.h"
 #include <cassert>
 #include <algorithm>
 #include <vector>
@@ -31,7 +32,7 @@ void DefenderAI::init(Defender &defender, uint32_t lookAheadDistance, const Vec2
 }
 
 PlayerMovement DefenderAI::update(uint32_t dt, const Player &player, const TeamAgainst &teamAgainst,
-		const std::vector<Defender> &defenders) {
+		const std::vector<Defender> &defenders, SoccerBall &soccerBall) {
 	if (mnoptrDefender) {
 		mTimer += dt;
 		if (mTimer > 1000) {
@@ -52,11 +53,11 @@ PlayerMovement DefenderAI::update(uint32_t dt, const Player &player, const TeamA
 		}
 		/*
 
-		if (mState == DEFENDER_AI_STATE_GO_TO_ZONE && mnoptrDefender->getBoundingBox().getCenterPoint() == mDefenderZoneTarget) {
+		 if (mState == DEFENDER_AI_STATE_GO_TO_ZONE && mnoptrDefender->getBoundingBox().getCenterPoint() == mDefenderZoneTarget) {
 		 setState(DEFENDER_AI_STATE_IN_ZONE_STOPPED);
-			mnoptrDefender->setDefenderState(PLAYER_STOPPED);
-			//return PLAYER_MOVEMENT_NONE;
-		}
+		 mnoptrDefender->setDefenderState(PLAYER_STOPPED);
+		 //return PLAYER_MOVEMENT_NONE;
+		 }
 		 */
 
 		if (mState == DEFENDER_AI_STATE_EXIT_ZONE && !mnoptrDefender->getBoundingBox().intersects(zone)) {
@@ -111,18 +112,17 @@ PlayerMovement DefenderAI::update(uint32_t dt, const Player &player, const TeamA
 			std::uniform_int_distribution<size_t> distribution(0, possibleDirections.size() - 1);
 			return possibleDirections[static_cast<int>(distribution(mAIRandomGenerator))];
 		}
-		
+
 		if (mState == DEFENDER_AI_STATE_PASSING) {
-			changeTarget(getChaseTarget(dt, player, teamAgainst, defenders));
+			changeTarget(getChaseTarget(dt, player, teamAgainst, defenders, soccerBall));
 		}
 
 		/*if (mState == DEFENDER_AI_STATE_DEFENDING) {
-			changeTarget(getChaseTarget(dt, player, teamAgainst, defenders));
-		}
-		if (mState == DEFENDER_AI_STATE_GO_TO_ZONE) {
-			changeTarget(mDefenderZoneTarget);
-		}*/
-		
+		 changeTarget(getChaseTarget(dt, player, teamAgainst, defenders));
+		 }
+		 if (mState == DEFENDER_AI_STATE_GO_TO_ZONE) {
+		 changeTarget(mDefenderZoneTarget);
+		 }*/
 
 		PlayerMovement directionToGoIn = PLAYER_MOVEMENT_NONE;
 
@@ -164,8 +164,8 @@ void DefenderAI::draw(Screen &screen) {
 		AARectangle bbox = zone;
 
 		/*bbox.moveBy(
-				getMovementVector(mnoptrDefender->getMovementDirection())
-						* mnoptrDefender->getBoundingBox().getWidth());*/
+		 getMovementVector(mnoptrDefender->getMovementDirection())
+		 * mnoptrDefender->getBoundingBox().getWidth());*/
 
 		Color c = Color(mnoptrDefender->getSpriteColor().getRed(), mnoptrDefender->getSpriteColor().getGreen(),
 				mnoptrDefender->getSpriteColor().getBlue(), 200);
@@ -174,28 +174,23 @@ void DefenderAI::draw(Screen &screen) {
 }
 
 void DefenderAI::defenderDelegateDefenderStateChangeTo(PlayerState lastState, PlayerState state) {
-	if (mnoptrDefender && mnoptrDefender->isRealeasedFromZone() && !(isInZone() || wantsToLeaveZone() || isDefending())) {
+	if (mnoptrDefender && mnoptrDefender->isRealeasedFromZone()
+			&& !(isInZone() || wantsToLeaveZone() || isDefending())) {
 		mnoptrDefender->setMovementDirection(getOppositeDirection(mnoptrDefender->getMovementDirection()));
 	}
 	if (lastState == PLAYER_STOPPED && state == PLAYER_JOGGING) {
 		setState(DEFENDER_AI_STATE_GO_TO_ZONE);
-	}
-	else if (lastState == PLAYER_STOPPED && state == PLAYER_SPRINTING) {
+	} else if (lastState == PLAYER_STOPPED && state == PLAYER_SPRINTING) {
 		setState(DEFENDER_AI_STATE_DEFENDING);
-	}
-	else if (lastState == PLAYER_SPRINTING && state == PLAYER_JOGGING) {
+	} else if (lastState == PLAYER_SPRINTING && state == PLAYER_JOGGING) {
 		setState(DEFENDER_AI_STATE_GO_TO_ZONE);
-	}
-	else if (lastState == PLAYER_JOGGING && state == PLAYER_STOPPED) {
+	} else if (lastState == PLAYER_JOGGING && state == PLAYER_STOPPED) {
 		setState(DEFENDER_AI_STATE_IN_ZONE_STOPPED);
-	}
-	else if (lastState == PLAYER_SPRINTING && state == PLAYER_STOPPED) {
+	} else if (lastState == PLAYER_SPRINTING && state == PLAYER_STOPPED) {
 		setState(DEFENDER_AI_STATE_IN_ZONE_STOPPED);
-	}
-	else if (lastState == PLAYER_JOGGING && state == PLAYER_JOGGING) {
+	} else if (lastState == PLAYER_JOGGING && state == PLAYER_JOGGING) {
 		setState(DEFENDER_AI_STATE_GO_TO_ZONE);
-	}
-	else if (lastState == PLAYER_JOGGING && state == PLAYER_SPRINTING) {
+	} else if (lastState == PLAYER_JOGGING && state == PLAYER_SPRINTING) {
 		setState(DEFENDER_AI_STATE_DEFENDING);
 	} else if (state == PLAYER_STOPPED) {
 		setState(DEFENDER_AI_STATE_DEFENDING);
@@ -248,11 +243,12 @@ void DefenderAI::changeTarget(const Vec2D &target) {
 }
 
 Vec2D DefenderAI::getChaseTarget(uint32_t dt, const Player &player, const TeamAgainst &teamAgainst,
-		const std::vector<Defender> &defenders) {
+		const std::vector<Defender> &defenders, SoccerBall &soccerBall) {
 	Vec2D target;
 	switch (mName) {
 	case GOALKEEPER: {
-		target = player.getBoundingBox().getCenterPoint();
+		target = soccerBall.getBoundingBox().getCenterPoint();
+		//target = player.getBoundingBox().getCenterPoint();
 	}
 		break;
 	case CENTER_BACK: {
